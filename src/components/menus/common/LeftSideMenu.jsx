@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
 import {Link} from "react-router-dom";
 
+// eslint-disable-next-line react/prop-types
 export default function LeftSideMenu({children}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
