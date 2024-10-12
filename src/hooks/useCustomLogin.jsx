@@ -1,4 +1,4 @@
-import {Navigate, useNavigate} from "react-router-dom";
+import {Navigate, useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {loginPostAsync, logout} from "../slices/loginSlice";
 
@@ -11,6 +11,7 @@ const useCustomLogin = () => {
 
   const isLogin = !!loginState.email
 
+
   const doLogin = async (loginParam) => {
     const action = await dispatch(loginPostAsync(loginParam))
     return action.payload
@@ -18,6 +19,13 @@ const useCustomLogin = () => {
 
   const doLogout = () => {
     dispatch(logout())
+  }
+
+  const moveToKakao = (path,email,name) => {
+    navigate(
+        {pathname: `/users/${path}`},
+        {state: {email, name}},
+        {replace:true})
   }
 
   const moveToPath = (path) => {
@@ -32,7 +40,7 @@ const useCustomLogin = () => {
     return <Navigate replace to="/users/login"/>
   }
 
-  return {loginState,isLogin,doLogin,doLogout,moveToPath,moveToLogin,moveToLoginReturn}
+  return {loginState,isLogin,doLogin,doLogout,moveToPath,moveToLogin,moveToLoginReturn, moveToKakao}
 }
 
 export default useCustomLogin

@@ -18,3 +18,7 @@ export const postJoin = async (memberParam) => {
   return  res.data
 }
 
+export const getUser = async (email) => {
+  const res = await axios.post(`${USER}/user`,email)
+  return res.data
+}
