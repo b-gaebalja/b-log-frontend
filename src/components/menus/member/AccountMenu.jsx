@@ -5,7 +5,7 @@ import {getCookie} from "../../../util/cookieUtil.jsx";
 
 function AccountMenu() {
 
-  const memberInfo = getCookie('member')
+  const memberInfo = getCookie('user')
 
   const demoSession = {
     user: {
