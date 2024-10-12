@@ -17,6 +17,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import {useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import useCustomLogin from "../../../hooks/useCustomLogin.jsx";
+import {useState} from "react";
+import ResultModal from "../../common/ResultModal.jsx";
 
 const SimpleMenu = () => {
 
@@ -25,10 +27,16 @@ const SimpleMenu = () => {
   const navigate = useNavigate()
 
   const {doLogout,moveToPath} = useCustomLogin()
+  const [result, setResult] = useState(false)
 
   const handleLogout = () => {
     doLogout()
-    alert('로그아웃 완료')
+    setResult(true)
+    // alert('로그아웃 완료')
+  }
+
+  const closeModal = () => {
+    setResult(false)
     moveToPath('/')
   }
 
@@ -36,7 +44,6 @@ const SimpleMenu = () => {
     if (event.target.checked){
       navigate('/users/login')
     }
-    console.log(loginState)
   };
 
   return (
@@ -128,6 +135,15 @@ const SimpleMenu = () => {
               )}
             </Toolbar>
           </AppBar>
+          {result?
+            <ResultModal
+            title={'로그아웃'}
+            content={'로그아웃 되었습니다'}
+            handleClose={closeModal}
+            />
+              :
+              <></>
+          }
         </Box>
       </>
   );

@@ -2,9 +2,8 @@ import React from 'react';
 import {Account, AuthenticationContext, SessionContext} from "@toolpad/core";
 import CustomMenuItems from "./CustomMenu.jsx";
 import {getCookie} from "../../../util/cookieUtil.jsx";
-import useCustomLogin from "../../../hooks/useCustomLogin.jsx";
 
-function AccountMenu(props) {
+function AccountMenu() {
 
   const memberInfo = getCookie('member')
 

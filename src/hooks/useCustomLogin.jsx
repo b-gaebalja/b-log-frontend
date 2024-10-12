@@ -1,4 +1,4 @@
-import {Navigate, useLocation, useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {loginPostAsync, logout} from "../slices/loginSlice";
 
@@ -33,7 +33,7 @@ const useCustomLogin = () => {
   }
 
   const moveToLogin = () => {
-    navigate({pathname:'/users/login'},{replace:true})
+    navigate({pathname:'/users/login'}, {replace:true})
   }
 
   const moveToLoginReturn = () => {

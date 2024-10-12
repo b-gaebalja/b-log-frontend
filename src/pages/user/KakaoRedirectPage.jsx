@@ -1,20 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useSearchParams} from "react-router-dom";
-import {useDispatch} from "react-redux";
 import useCustomLogin from "../../hooks/useCustomLogin.jsx";
 import {getAccessToken, getUserWithAccessToken} from "../../api/kakaoApi.js";
-import {login} from "../../slices/loginSlice.jsx";
-import {getUser, postJoin} from "../../api/userApi.js";
+import {getUser} from "../../api/userApi.js";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import ResultModal from "../../components/common/ResultModal.jsx";
 import {useQuery} from "@tanstack/react-query";
 
-function KakaoRedirectPage(props) {
+function KakaoRedirectPage() {
 
  const [searchParams] = useSearchParams()
   const authCode = searchParams.get('code')
-  const dispatch = useDispatch()
   const {moveToKakao,moveToLogin} = useCustomLogin()
   const {data,isSuccess} = useQuery({queryKey:[authCode],queryFn:()=>getAccessToken(authCode)})
   const [result, setResult] = useState(false)
@@ -26,16 +23,15 @@ function KakaoRedirectPage(props) {
         if (result.ERROR) {
           moveToKakao('join', email.email, name)
         } else {
-          setResult(true)
-          console.log('이미 가입했잖')
+          setResult(email.email)
         }
       })
     })
   }
 
   const closeModal = () => {
-    setResult(false)
     moveToLogin()
+    setResult(false)
   }
 
   return (
@@ -44,7 +40,7 @@ function KakaoRedirectPage(props) {
         {result?
         <ResultModal
         title={"이미 계정이 있습니다"}
-        content={"해당 카카오 계정으로 가입된 계정이 있습니다"}
+        content={`해당 카카오 계정으로 가입된 계정이 있습니다 \n ${result}`}
         handleClose={closeModal}
         />
           :<></>
