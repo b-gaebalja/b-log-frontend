@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import useCustomLogin from "../../hooks/useCustomLogin.jsx";
 import ResultModal from "../common/ResultModal.jsx";
+import {Link} from "react-router-dom";
+import {getKakaoLink} from "../../api/kakaoApi.js";
 
 const initState = {
   email: '',
@@ -26,6 +28,7 @@ export default function LoginComponent() {
   }
 
   const handleLogin = () => {
+
     doLogin(loginParam)
     .then(data => {
       if (data.ERROR) {
@@ -37,11 +40,11 @@ export default function LoginComponent() {
   }
 
   const handleClose = () => {
-    if(result){
-    setResult(null)
-    moveToPath('/')
+    if (result) {
+      setResult(null)
+      moveToPath('/')
     }
-    if (fail){
+    if (fail) {
       setFail(null)
     }
   }
@@ -49,17 +52,17 @@ export default function LoginComponent() {
   return (
       <>
         {result ? <ResultModal
-            title={`안녕하세요 ${result}, 님`}
-            content={"로그인 하셨습니다."}
-            handleClose={handleClose}
+                title={`안녕하세요 ${result}, 님`}
+                content={"로그인 하셨습니다."}
+                handleClose={handleClose}
             />
             :
             <></>}
-        {fail?<ResultModal
-        title={`안녕하세요 로그인에 실패하셨습니다`}
-        content={'아이디와 비밀번호를 다시 확인해주세요'}
-        handleClose={handleClose}
-        />:<></>}
+        {fail ? <ResultModal
+            title={`안녕하세요 로그인에 실패하셨습니다`}
+            content={'아이디와 비밀번호를 다시 확인해주세요'}
+            handleClose={handleClose}
+        /> : <></>}
         <Box
             component="form"
             sx={{'& .MuiTextField-root': {m: 1, width: '25ch'}}}
@@ -91,11 +94,12 @@ export default function LoginComponent() {
               <Button variant="outlined"
                       onClick={handleLogin}
               >로그인</Button>
-              <Button variant="outlined"
-                      onClick={() => moveToPath('/users/join')}
-              >
-                회원가입
-              </Button>
+              <Link to={getKakaoLink()}>
+                <Button variant="outlined"
+                >
+                  회원가입
+                </Button>
+              </Link>
             </Stack>
           </Box>
         </Box>

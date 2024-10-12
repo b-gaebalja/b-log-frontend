@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import {useRef, useState} from "react";
 import {postJoin} from "../../api/userApi.js";
 import useCustomLogin from "../../hooks/useCustomLogin.jsx";
+import {useLocation} from "react-router-dom";
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -35,6 +36,8 @@ export default function JoinComponent() {
   const [member, setMember] = useState(initState)
   const profileRef = useRef()
   const {doLogin,moveToPath} = useCustomLogin()
+  const kakaoEmail = useLocation().state.email
+  const kakaoName = useLocation().state.name
 
   const handleMemberInfo = (e) => {
     member[e.target.name] = e.target.value
@@ -46,8 +49,8 @@ export default function JoinComponent() {
     const formData = new FormData()
     const profile = profileRef.current.files[0]
     console.log(profile)
-    formData.append('email',member.email)
-    formData.append('fullName',member.fullName)
+    formData.append('email',kakaoEmail)
+    formData.append('fullName',kakaoName)
     formData.append('username',member.username)
     formData.append('password',member.password)
     formData.append('file',profile)
@@ -57,7 +60,7 @@ export default function JoinComponent() {
     }
     postJoin(formData).then(data=>{
       console.log(data)
-      doLogin({email:member.email,password:member.password})
+      doLogin({email:kakaoEmail,password:member.password})
       .then(data => {
         if(data.ERROR){
           alert('이메일과 패스워드를 확인해주세요')
@@ -106,23 +109,6 @@ export default function JoinComponent() {
                 sx={{ width: 56, height: 56 }}
             />
           </Stack>
-
-          <TextField
-              required
-              id="email"
-              label="이메일"
-              name="email"
-              value={member.email}
-              onChange={handleMemberInfo}
-          />
-          <TextField
-              required
-              id="fullName"
-              label="이름"
-              name="fullName"
-              value={member.fullName}
-              onChange={handleMemberInfo}
-          />
           <TextField
               required
               id="username"
