@@ -7,7 +7,7 @@ const initState = {
 }
 
 const loadMemberCookie = () => {
-  return getCookie('member')
+  return getCookie('user')
 }
 
 export const loginPostAsync = createAsyncThunk('loginPostAsync',(param)=>postLogin(param))
@@ -30,7 +30,7 @@ const loginSlice = createSlice({
       console.log("fulfilled")
       const payload = action.payload
       if(!payload.ERROR){
-        setCookie("member",JSON.stringify(payload))
+        setCookie("user",JSON.stringify(payload))
       }
       const email = payload.email
       const userId = payload.userId

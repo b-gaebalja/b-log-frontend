@@ -12,9 +12,9 @@ const refreshJwt = async (accessToken, refreshToken) => {
 }
 
 const beforeReq = (config) => {
-  const memberInfo = getCookie('member');
+  const memberInfo = getCookie('user');
   if (!memberInfo) {
-    console.log('MEMBER NOT FOUND')
+    console.log('USER NOT FOUND')
     return Promise.reject(
         {
           response: {
@@ -36,13 +36,13 @@ const beforeRes = async (res) => {
   const data = res.data
 
   if (data && data.ERROR === 'ERROR_ACCESS_TOKEN') {
-    const memberCookieValue = getCookie('member')
+    const memberCookieValue = getCookie('user')
     const result = await refreshJwt(memberCookieValue.accessToken,
         memberCookieValue.refreshToken)
     memberCookieValue.accessToken = result.accessToken
     memberCookieValue.refreshToken = result.refreshToken
 
-    setCookie('member',JSON.stringify(memberCookieValue),1)
+    setCookie('user',JSON.stringify(memberCookieValue),1)
 
     const originalRequest = res.config
     originalRequest.headers.Authorization = `Bearer ${result.accessToken}`
