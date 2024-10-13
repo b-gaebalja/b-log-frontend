@@ -8,12 +8,14 @@ import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-javascript.min.js';
 import {postAdd} from "../../api/postApi.js";
+import UseCustomLogin from "../../hooks/useCustomLogin.jsx";
 
 function AddByEditorComponent() {
     const editorRef = useRef(null);
     const editorInstance = useRef(null); // 에디터 인스턴스를 위한 useRef 추가
     const [content, setContent] = useState(''); // 에디터 콘텐츠 상태 추가
     const navigate = useNavigate()
+    const {loginState} = UseCustomLogin();
 
     useEffect(() => {
         if (editorRef.current) {
@@ -65,8 +67,8 @@ function AddByEditorComponent() {
     // 제출 핸들러
     const handleSubmit = () => {
         const formData = new FormData();
-        // TODO: 회원 ID 연결
-        formData.append('userId', 1);
+
+        formData.append('email', loginState.email);
         formData.append('content', content);
 
         postAdd(formData).then(response => {
