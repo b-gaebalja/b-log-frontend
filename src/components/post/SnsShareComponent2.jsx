@@ -1,11 +1,10 @@
-import {FacebookIcon, FacebookShareButton, FacebookShareCount} from "react-share";
-import {TwitterShareButton, TwitterIcon, XIcon} from "react-share";
+import {FacebookIcon, FacebookShareButton, FacebookShareCount, TwitterShareButton, XIcon} from "react-share";
 
 //현재 페이지 변수 저장
 const currentUrl = window.location.href;
 
 const SnsShareComponent2 = () => {
-    return(
+    return (
         <div>
             {/*페이스북*/}
             <FacebookShareButton url={currentUrl}>
@@ -17,7 +16,7 @@ const SnsShareComponent2 = () => {
 
             {/*트위터*/}
             <TwitterShareButton url={currentUrl}>
-                <XIcon size={25} round={true} />
+                <XIcon size={25} round={true}/>
             </TwitterShareButton>
 
 

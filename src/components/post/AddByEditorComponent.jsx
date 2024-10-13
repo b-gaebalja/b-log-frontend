@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-javascript.min.js';
-import {postAdd} from "../../api/boardApi.jsx";
+import {postAdd} from "../../api/postApi.js";
 
 function AddByEditorComponent() {
     const editorRef = useRef(null);

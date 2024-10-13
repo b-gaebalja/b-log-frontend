@@ -72,7 +72,7 @@ const ViewerComponent = ({content}) => {
                             onClick={() => {
                                 console.log(`클릭함 ${action.name}`)
                                 if (action.name === '수정하기') {
-                                    moveToPath(`/board/modify/${id}`);
+                                    moveToPath(`/post/modify/${id}`);
                                 }
                             }}
                         />

@@ -38,7 +38,7 @@ export default function LeftSideMenu({children}) {
             TransitionComponent={Fade}
         >
           <Link to={'/'}><MenuItem>홈</MenuItem></Link>
-          <Link to={'/board'}><MenuItem>다른 사람글 보기</MenuItem></Link>
+          <Link to={'/post'}><MenuItem>다른 사람 게시글 보기</MenuItem></Link>
           <Link to={'/scrap'}><MenuItem>나의 스크랩</MenuItem></Link>
         </Menu>
       </div>

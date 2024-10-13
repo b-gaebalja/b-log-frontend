@@ -1,4 +1,4 @@
-import {BOARD, USER} from "./config.js";
+import {POST, USER} from "./config.js";
 import axios from "axios";
 
 export const postLogin = async (loginParam) => {
