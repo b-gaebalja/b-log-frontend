@@ -3,15 +3,15 @@ import {createBrowserRouter, Navigate} from "react-router-dom";
 import * as React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import boardRouter from "./boardRouter.jsx";
+import postRouter from "./postRouter.jsx";
 import notificationRouter from "./notificationRouter.jsx";
 import memberRouter from "./userRouter.jsx";
 
 const Loading = <Box sx={{ display: 'flex' }}><CircularProgress /></Box>
 
 const Main = lazy(()=> import("../pages/MainPage.jsx"))
-const ListBasic = lazy(()=> import("../pages/board/list/ListBasicPage.jsx"))
-const BoardIndex = lazy(()=> import("../pages/board/IndexPage.jsx"))
+const ListBasic = lazy(()=> import("../pages/post/list/ListBasicPage.jsx"))
+const PostIndex = lazy(()=> import("../pages/post/IndexPage.jsx"))
 const NotificationIndex = lazy(()=> import("../pages/notification/IndexPage.jsx"))
 const MemberIndex = lazy(()=> import("../pages/user/IndexPage.jsx"))
 
@@ -35,9 +35,9 @@ const root = createBrowserRouter([
     ]
   },
   {
-    path:'board',
-    element:<Suspense fallback={Loading}><BoardIndex/></Suspense>,
-    children: boardRouter()
+    path:'post',
+    element:<Suspense fallback={Loading}><PostIndex/></Suspense>,
+    children: postRouter()
   },
   {
     path:'notification',
