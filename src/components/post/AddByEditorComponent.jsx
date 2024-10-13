@@ -9,6 +9,7 @@ import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-javascript.min.js';
 import {postAdd} from "../../api/postApi.js";
 import UseCustomLogin from "../../hooks/useCustomLogin.jsx";
+import ResultModal from "../common/ResultModal.jsx";
 
 function AddByEditorComponent() {
     const editorRef = useRef(null);
@@ -16,6 +17,8 @@ function AddByEditorComponent() {
     const [content, setContent] = useState(''); // 에디터 콘텐츠 상태 추가
     const navigate = useNavigate()
     const {loginState} = UseCustomLogin();
+    const [result, setResult] = useState(false)
+    const [redirectPath, setRedirectPath] = useState('');
 
     useEffect(() => {
         if (editorRef.current) {
@@ -68,17 +71,23 @@ function AddByEditorComponent() {
     const handleSubmit = () => {
         const formData = new FormData();
 
-        formData.append('email', loginState.email);
+        formData.append('email', 'user3@example.com');
         formData.append('content', content);
 
         postAdd(formData).then(response => {
-            navigate(`../${response.headers.location.split('/').pop()}`);
+            setResult(true)
+            setRedirectPath('../' + response.headers.location.split('/').pop());
         })
             .catch((error) => {
                 console.log(error);
-                alert('게시글 저장에 실패했습니다.')
+                alert('게시글 등록에 실패했습니다.')
             })
     };
+
+    const closeModal = () => {
+        setResult(false)
+        navigate(redirectPath)
+    }
 
     useEffect(() => {
         if (content) {
@@ -92,8 +101,15 @@ function AddByEditorComponent() {
             <div ref={editorRef}></div>
             <Button
                 onClick={handleSubmit}
-
             >작성하기</Button> {/* 제출 버튼 */}
+            {result
+                ? <ResultModal
+                    title={'게시글 등록'}
+                    content={'게시글이 등록되었습니다.'}
+                    handleClose={closeModal}
+                />
+                : <></>
+            }
         </div>
     );
 }
