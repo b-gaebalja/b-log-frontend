@@ -21,7 +21,7 @@ const loginSlice = createSlice({
       return {email: action.payload.email}
     },*/
     logout: () => {
-      removeCookie('member')
+      removeCookie('user')
       return {...initState}
     }
   },
