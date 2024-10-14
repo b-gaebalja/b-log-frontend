@@ -4,8 +4,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
 import Button from "@mui/material/Button";
 import {useNavigate, useParams} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {add} from "../../slices/postSlice.jsx";
+import {useSelector} from "react-redux";
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-javascript.min.js';
@@ -15,7 +14,6 @@ function ModifyByEditorComponent() {
     const editorInstance = useRef(null); // 에디터 인스턴스를 위한 useRef 추가
     const [content, setContent] = useState(''); // 에디터 콘텐츠 상태 추가
     const navigate = useNavigate()
-    const dispatch = useDispatch()
     const contentForModify = useSelector(state => state.postSlice)
 
     useEffect(() => {
@@ -69,7 +67,6 @@ function ModifyByEditorComponent() {
 
     // 제출 핸들러
     const handleSubmit = () => {
-        dispatch(add(content))
         navigate({pathname: `../${id}`})
     };
 

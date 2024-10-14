@@ -1,4 +1,4 @@
-export const API_SERVER_HOST = 'http://localhost:8080'
+export const API_SERVER_HOST = 'http://43.200.154.136:8080'
 
 export const POST = `${API_SERVER_HOST}/posts`
 
