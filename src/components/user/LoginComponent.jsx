@@ -18,7 +18,8 @@ export default function LoginComponent() {
 
   const [loginParam, setLoginParam] = useState({...initState})
   const [result, setResult] = useState(null)
-  const [fail, setFail] = useState(null)
+  const [success, setSuccess] = useState(false)
+  const [fail, setFail] = useState(false)
 
   const {doLogin, moveToPath} = useCustomLogin()
 
@@ -32,8 +33,9 @@ export default function LoginComponent() {
     doLogin(loginParam)
     .then(data => {
       if (data.ERROR) {
-        setFail(data.ERROR)
+        setFail(true)
       } else {
+        setSuccess(true)
         setResult(data.username)
       }
     })
@@ -45,13 +47,14 @@ export default function LoginComponent() {
       moveToPath('/')
     }
     if (fail) {
-      setFail(null)
+      setFail(false)
     }
   }
 
   return (
       <>
         {result ? <ResultModal
+                open={success}
                 title={`안녕하세요 ${result}, 님`}
                 content={"로그인 하셨습니다."}
                 handleClose={handleClose}
@@ -59,6 +62,7 @@ export default function LoginComponent() {
             :
             <></>}
         {fail ? <ResultModal
+            open={fail}
             title={`안녕하세요 로그인에 실패하셨습니다`}
             content={'아이디와 비밀번호를 다시 확인해주세요'}
             handleClose={handleClose}

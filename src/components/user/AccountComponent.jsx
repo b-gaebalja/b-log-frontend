@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useState} from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -9,13 +9,13 @@ import Button from "@mui/material/Button";
 import {useMutation} from "@tanstack/react-query";
 import {deleteUser, putPassword, putUsername} from "../../api/userApi.js";
 import {
-  Dialog, DialogActions,
+  Dialog,
+  DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import {Fragment, useState} from "react";
 import ResultModal from "../common/ResultModal.jsx";
 
 const style = {
@@ -31,9 +31,12 @@ const style = {
 
 export default function AccountComponent() {
 
-  const {loginState,doLogout,moveToPath} = useCustomLogin()
+  const {loginState, doLogout, moveToPath} = useCustomLogin()
   const userId = loginState.userId
   const username = loginState.username
+  const [open, setOpen] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [fail, setFail] = useState(false)
 
   const userParams = {
     email: '',
@@ -49,7 +52,13 @@ export default function AccountComponent() {
       {mutationFn: (password) => putPassword(userId, password)})
 
   const withDrawMutation = useMutation(
-      {mutationFn: () => deleteUser(userId, user)})
+      {
+        mutationFn: () =>
+            deleteUser(userId, user).then(()=>setSuccess(true)).catch(() => {
+              setUser({...userParams})
+              setFail(true)
+            })
+      })
 
   const handleEditUsername = () => {
     usernameEditMutation.mutate()
@@ -64,14 +73,12 @@ export default function AccountComponent() {
     withDrawMutation.mutate()
   }
 
-  const [open, setOpen] = React.useState(false);
-
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setOpen(false)
   };
 
   const handleChangeUserParams = (e) => {
@@ -84,6 +91,9 @@ export default function AccountComponent() {
     moveToPath('/')
   }
 
+  const handleCloseFailModal = () => {
+    setFail(false)
+  }
 
   return (
       <Box
@@ -128,6 +138,7 @@ export default function AccountComponent() {
                     type="email"
                     fullWidth
                     variant="standard"
+                    value={user.email}
                     onChange={handleChangeUserParams}
                 />
                 <TextField
@@ -139,6 +150,7 @@ export default function AccountComponent() {
                     type="email"
                     fullWidth
                     variant="standard"
+                    value={user.password}
                     onChange={handleChangeUserParams}
                 />
               </DialogContent>
@@ -148,7 +160,7 @@ export default function AccountComponent() {
                   취소
                 </Button>
                 <Button
-                onClick={handleClickWithdraw}
+                    onClick={handleClickWithdraw}
                 >탈퇴</Button>
               </DialogActions>
             </Dialog>
@@ -156,9 +168,20 @@ export default function AccountComponent() {
         </List>
         {withDrawMutation.isSuccess?
             <ResultModal
-            title={"회원탈퇴"}
-            content={"탈퇴가 되었습니다"}
-            handleClose={handleCloseModal}
+                open={success}
+                title={"회원탈퇴"}
+                content={"탈퇴가 되었습니다"}
+                handleClose={handleCloseModal}
+            />
+            :
+            <></>
+        }
+        {fail ?
+            <ResultModal
+                open={fail}
+                title={"회원탈퇴"}
+                content={"회원탈퇴가 되지않았습니다. 다시 시도해주세요."}
+                handleClose={handleCloseFailModal}
             />
             :
             <></>
