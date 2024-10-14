@@ -8,6 +8,7 @@ const Loading = <Box sx={{display: 'flex'}}><CircularProgress/></Box>
 const UserLogin = lazy(() => import("../pages/user/LoginPage.jsx"))
 const MemberJoin = lazy(() => import("../pages/user/JoinPage.jsx"))
 const KakaoRedirect = lazy(() => import("../pages/user/KakaoRedirectPage.jsx"))
+const UserAccount = lazy(()=> import("../pages/user/AccountPage.jsx"))
 
 const UserRouter = () => {
   return [
@@ -26,6 +27,10 @@ const UserRouter = () => {
     {
       path: 'kakao',
       element: <Suspense fallback={Loading}><KakaoRedirect/></Suspense>
+    },
+    {
+      path: 'account',
+      element: <Suspense fallback={Loading}><UserAccount/></Suspense>
     }
   ]
 }
