@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-javascript.min.js';
-import {postAdd} from "../../api/postApi.js";
+import {patchComplete, postRegister} from "../../api/postApi.js";
 import {postAdd} from "../../api/imageApi.js";
 import UseCustomLogin from "../../hooks/useCustomLogin.jsx";
 import ResultModal from "../common/ResultModal.jsx";
@@ -15,12 +15,33 @@ import ResultModal from "../common/ResultModal.jsx";
 function AddByEditorComponent() {
     const editorRef = useRef(null);
     const editorInstance = useRef(null); // 에디터 인스턴스를 위한 useRef 추가
-    const [content, setContent] = useState(''); // 에디터 콘텐츠 상태 추가
-    const navigate = useNavigate()
+    const idRef = useRef(null);
+    const [content, setContent] = useState('최초 등록'); // 에디터 콘텐츠 상태 추가
     const {loginState} = UseCustomLogin();
     const [imagePreviews, setImagePreviews] = useState([]);
+    const navigate = useNavigate()
     const [result, setResult] = useState(false)
     const [redirectPath, setRedirectPath] = useState('');
+
+    const registerPost = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('email', loginState.email);
+            formData.append('content', content);
+
+            const response = await postRegister(formData);
+            idRef.current = response.headers.location.split('/').pop();
+        } catch (error) {
+            console.error(error);
+            alert('게시글 초기화에 실패했습니다.');
+        }
+    };
+
+    useEffect(() => {
+        if (loginState.email) {
+            registerPost();
+        }
+    }, [loginState.email]);
 
     useEffect(() => {
         if (editorRef.current) {
@@ -77,12 +98,12 @@ function AddByEditorComponent() {
     const handleSubmit = () => {
         const formData = new FormData();
 
-        formData.append('email', 'user3@example.com');
+        formData.append('id', idRef.current);
         formData.append('content', content);
 
-        postAdd(formData).then(response => {
+        patchComplete(formData).then(response => {
             setResult(true)
-            setRedirectPath('../' + response.headers.location.split('/').pop());
+            setRedirectPath('../' + idRef.current);
         })
             .catch((error) => {
                 console.log(error);
