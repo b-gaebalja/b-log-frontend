@@ -10,6 +10,7 @@ import {postJoin, postRejoin} from "../../api/userApi.js";
 import useCustomLogin from "../../hooks/useCustomLogin.jsx";
 import {useLocation} from "react-router-dom";
 import DialogButtonComponent from "../common/DialogButtonComponent.jsx";
+import {postAdd} from "../../api/imageApi.js";
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -47,23 +48,34 @@ export default function JoinComponent() {
 
   const handleJoin = () => {
     const formData = new FormData()
-    const profile = profileRef.current.files[0]
+
     formData.append('email', kakaoEmail)
     formData.append('fullName', kakaoName)
     formData.append('username', member.username)
     formData.append('password', member.password)
-    formData.append('file', profile)
+
 
     for (let [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
     postJoin(formData).then(data => {
-          console.log(data)
           if (data.FAIL) {
-            console.log('이미 가입 전적 있음')
             setDialog(true)
           }
           if (data.SUCCESS) {
+            console.log(data.SUCCESS)
+            const profile = profileRef.current.files[0]
+            const formProfile = new FormData()
+            formProfile.append('image',profile)
+            formProfile.append('targetType', 'POST');
+            formProfile.append('targetId',data.SUCCESS)
+            postAdd(formProfile).then(response =>{
+              alert('이미지 저장에 성공했습니다.')
+            }).catch((err)=>{
+              console.error(err)
+              alert('이미지 저장에 실패했습니다.')
+            })
+
             doLogin({email: kakaoEmail, password: member.password})
             .then(data => {
               if (data.ERROR) {
