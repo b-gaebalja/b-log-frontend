@@ -101,7 +101,7 @@ function AddByEditorComponent() {
         formData.append('id', idRef.current);
         formData.append('content', content);
 
-        patchComplete(formData).then(response => {
+        patchComplete(formData).then(() => {
             setResult(true)
             setRedirectPath('../' + idRef.current);
         })
@@ -134,6 +134,7 @@ function AddByEditorComponent() {
                     title={'게시글 등록'}
                     content={'게시글이 등록되었습니다.'}
                     handleClose={closeModal}
+                    open={result}
                 />
                 : <></>
             }
