@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Editor from '@toast-ui/editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
@@ -15,8 +15,9 @@ import ShareIcon from "@mui/icons-material/Share";
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import useCustomMove from "../../hooks/useCustomMove.jsx";
 import {useParams} from "react-router-dom";
+import {getPost} from "../../api/postApi.js";
 
-const ViewerComponent = ({content}) => {
+const ViewerComponent = () => {
     const actions = [
         {icon: <FileCopyIcon/>, name: '복사하기'},
         {icon: <SaveIcon/>, name: '저장하기'},
@@ -27,6 +28,8 @@ const ViewerComponent = ({content}) => {
     const viewerRef = useRef(null);
     const viewerInstance = useRef(null); // Viewer 인스턴스를 위한 ref 추가
     const {moveToPath} = useCustomMove();
+    const [content, setContent] = useState()
+
 
     useEffect(() => {
         if (viewerRef.current) {
@@ -55,6 +58,15 @@ const ViewerComponent = ({content}) => {
     }, [content]); // content가 변경될 때마다 하이라이팅 적용
 
     const {id} = useParams();
+
+    useEffect(() => {
+        getPost(id).then(response => {
+            setContent(response.data.content);
+        })
+            .catch((error) => {
+                console.error(error);
+            })
+    }, [id]);
 
     return (
         <Box sx={{position: 'relative', height: '100vh'}}>

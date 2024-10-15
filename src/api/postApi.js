@@ -12,3 +12,9 @@ export const patchComplete = async (completeParam) => {
 
     return await axios.patch(`${POST}`, completeParam, header)
 }
+
+export const getPost = async (id) => {
+    const header = {headers: {'Content-Type': 'application/json'}}
+
+    return await axios.get(`${POST}/${id}`, header)
+}
