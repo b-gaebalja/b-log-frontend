@@ -35,10 +35,12 @@ const loginSlice = createSlice({
       const email = payload.email
       const userId = payload.userId
       const username = payload.username
+      const profile = payload.imageUrl
       return {
         email,
         userId,
-        username
+        username,
+        profile
       }
     })
     .addCase(loginPostAsync.pending,(state,action)=>{

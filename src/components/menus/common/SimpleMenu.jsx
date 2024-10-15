@@ -12,7 +12,7 @@ import NotificationMenu from "../notification/NotificationMenu.jsx";
 import LeftSideMenu from "./LeftSideMenu.jsx";
 import SearchIcon from '@mui/icons-material/Search';
 import {InputAdornment} from "@mui/material";
-import AccountMenu from "../member/AccountMenu.jsx";
+import AccountMenu from "../user/AccountMenu.jsx";
 import HomeIcon from '@mui/icons-material/Home';
 import {useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";

@@ -67,13 +67,10 @@ export default function JoinComponent() {
             const profile = profileRef.current.files[0]
             const formProfile = new FormData()
             formProfile.append('image',profile)
-            formProfile.append('targetType', 'POST');
+            formProfile.append('targetType', 'USER');
             formProfile.append('targetId',data.SUCCESS)
-            postAdd(formProfile).then(response =>{
-              alert('이미지 저장에 성공했습니다.')
-            }).catch((err)=>{
+            postAdd(formProfile).then().catch((err)=>{
               console.error(err)
-              alert('이미지 저장에 실패했습니다.')
             })
 
             doLogin({email: kakaoEmail, password: member.password})
