@@ -18,3 +18,12 @@ export const getPost = async (id) => {
 
     return await axios.get(`${POST}/${id}`, header)
 }
+
+export const getMyPosts = async (email, page) => {
+    const config = {
+        headers: {'Content-Type': 'application/json'},
+        params: {email: email, pageNumber: page}
+    };
+
+    return await axios.get(`${POST}/users`, config);
+};
