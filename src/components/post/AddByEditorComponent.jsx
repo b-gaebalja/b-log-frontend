@@ -11,17 +11,23 @@ import {patchComplete, postRegister} from "../../api/postApi.js";
 import {postAdd} from "../../api/imageApi.js";
 import UseCustomLogin from "../../hooks/useCustomLogin.jsx";
 import ResultModal from "../common/ResultModal.jsx";
+import useCustomLogin from "../../hooks/useCustomLogin.jsx";
 
 function AddByEditorComponent() {
     const editorRef = useRef(null);
     const editorInstance = useRef(null); // 에디터 인스턴스를 위한 useRef 추가
     const idRef = useRef(null);
     const [content, setContent] = useState('최초 등록'); // 에디터 콘텐츠 상태 추가
-    const {loginState} = UseCustomLogin();
+    const {loginState, doLogout, moveToPath, isLogin, moveToLoginReturn}
+        = useCustomLogin()
     const [imagePreviews, setImagePreviews] = useState([]);
     const navigate = useNavigate()
     const [result, setResult] = useState(false)
     const [redirectPath, setRedirectPath] = useState('');
+
+    if (!isLogin) {
+        return moveToLoginReturn()
+    }
 
     const registerPost = async () => {
         try {
