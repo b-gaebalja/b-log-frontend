@@ -8,6 +8,7 @@ import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-javascript.min.js';
 import {postAdd} from "../../api/postApi.js";
+import {postAdd} from "../../api/imageApi.js";
 import UseCustomLogin from "../../hooks/useCustomLogin.jsx";
 import ResultModal from "../common/ResultModal.jsx";
 
@@ -17,6 +18,7 @@ function AddByEditorComponent() {
     const [content, setContent] = useState(''); // 에디터 콘텐츠 상태 추가
     const navigate = useNavigate()
     const {loginState} = UseCustomLogin();
+    const [imagePreviews, setImagePreviews] = useState([]);
     const [result, setResult] = useState(false)
     const [redirectPath, setRedirectPath] = useState('');
 
@@ -43,14 +45,18 @@ function AddByEditorComponent() {
             editorInstance.current.addHook('addImageBlobHook', async (blob, callback) => {
                 const formData = new FormData();
                 formData.append('image', blob);
+                formData.append('targetType', 'POST');
+                formData.append('targetId', idRef.current);
 
-                /* try {
-                  const response = await axios.post('/api', formData); // API 요청
-                  callback(response.data.url, blob.name); // URL과 이미지 이름을 callback으로 전달
-                } catch (error) {
-                  console.error('Image upload failed:', error);
-                } */
-                callback('...' + 'localhost3000', blob.name);
+                postAdd(formData).then(response => {
+                    const imageUrl = response.data.url
+                    setImagePreviews(prev => [...prev, imageUrl]);
+                    callback(imageUrl, blob.name);
+                })
+                    .catch((error) => {
+                        console.error(error);
+                        alert('이미지 저장에 실패했습니다.')
+                    })
             });
 
             // 에디터에서 변경 사항 감지

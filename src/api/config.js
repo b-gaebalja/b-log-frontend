@@ -7,3 +7,5 @@ export const USER = `${API_SERVER_HOST}/users`
 export const SHARE = `${API_SERVER_HOST}/share`
 
 export const NOTIFICATION = `${API_SERVER_HOST}/notification`
+
+export const IMAGE = `${API_SERVER_HOST}/images`
