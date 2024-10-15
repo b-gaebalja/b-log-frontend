@@ -15,6 +15,7 @@ function KakaoRedirectPage() {
   const {moveToKakao,moveToLogin} = useCustomLogin()
   const {data,isSuccess} = useQuery({queryKey:[authCode],queryFn:()=>getAccessToken(authCode)})
   const [result, setResult] = useState(false)
+  const [open, setOpen] = useState(false)
   if(isSuccess) {
     getUserWithAccessToken(data).then(res => {
       const email = {email: res.kakao_account.email}
@@ -24,14 +25,16 @@ function KakaoRedirectPage() {
           moveToKakao('join', email.email, name)
         } else {
           setResult(email.email)
+          setOpen(true)
         }
       })
     })
   }
 
   const closeModal = () => {
-    moveToLogin()
+    setOpen(false)
     setResult(false)
+    moveToLogin()
   }
 
   return (
@@ -39,6 +42,7 @@ function KakaoRedirectPage() {
         <Box sx={{ display: 'flex' }}><CircularProgress /></Box>
         {result?
         <ResultModal
+            open={open}
         title={"이미 계정이 있습니다"}
         content={`해당 카카오 계정으로 가입된 계정이 있습니다 \n ${result}`}
         handleClose={closeModal}
