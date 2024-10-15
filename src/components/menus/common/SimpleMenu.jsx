@@ -32,7 +32,7 @@ const SimpleMenu = () => {
   const handleLogout = () => {
     doLogout()
     setResult(true)
-    // alert('로그아웃 완료')
+    moveToPath('/')
   }
 
   const closeModal = () => {
