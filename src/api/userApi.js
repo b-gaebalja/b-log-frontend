@@ -32,3 +32,9 @@ export const deleteUser = async (userId, user) => {
   console.log(user)
   return (await jwtAxios.delete(`${USER}/${userId}`, {data:user})).data
 }
+
+export const postRejoin = async (user) => {
+  console.log(user)
+  const header = {headers: {'Content-Type': 'multipart/form-data'}}
+  return (await axios.post(`${USER}/reuser`,user,header)).data
+}

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {styled} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import {Avatar} from "@mui/material";
@@ -7,9 +6,10 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import {useRef, useState} from "react";
-import {postJoin} from "../../api/userApi.js";
+import {postJoin, postRejoin} from "../../api/userApi.js";
 import useCustomLogin from "../../hooks/useCustomLogin.jsx";
 import {useLocation} from "react-router-dom";
+import DialogButtonComponent from "../common/DialogButtonComponent.jsx";
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -24,20 +24,21 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 const initState = {
-  email:'',
+  email: '',
   fullName: '',
   username: '',
   password: '',
-  file:[]
+  file: []
 }
 
 export default function JoinComponent() {
 
   const [member, setMember] = useState(initState)
   const profileRef = useRef()
-  const {doLogin,moveToPath} = useCustomLogin()
+  const {doLogin, moveToPath} = useCustomLogin()
   const kakaoEmail = useLocation().state.email
   const kakaoName = useLocation().state.name
+  const [dialog, setDialog] = useState(false)
 
   const handleMemberInfo = (e) => {
     member[e.target.name] = e.target.value
@@ -45,36 +46,73 @@ export default function JoinComponent() {
   }
 
   const handleJoin = () => {
-    console.log(member)
     const formData = new FormData()
     const profile = profileRef.current.files[0]
-    console.log(profile)
-    formData.append('email',kakaoEmail)
-    formData.append('fullName',kakaoName)
-    formData.append('username',member.username)
-    formData.append('password',member.password)
-    formData.append('file',profile)
+    formData.append('email', kakaoEmail)
+    formData.append('fullName', kakaoName)
+    formData.append('username', member.username)
+    formData.append('password', member.password)
+    formData.append('file', profile)
 
     for (let [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
-    postJoin(formData).then(data=>{
-      console.log(data)
-      doLogin({email:kakaoEmail,password:member.password})
-      .then(data => {
-        if(data.ERROR){
-          alert('이메일과 패스워드를 확인해주세요')
-        }else {
-          moveToPath('/')
+    postJoin(formData).then(data => {
+          console.log(data)
+          if (data.FAIL) {
+            console.log('이미 가입 전적 있음')
+            setDialog(true)
+          }
+          if (data.SUCCESS) {
+            doLogin({email: kakaoEmail, password: member.password})
+            .then(data => {
+              if (data.ERROR) {
+                console.log(data.ERROR)
+                alert('이메일과 패스워드를 확인해주세요')
+              } else {
+                moveToPath('/')
+              }
+            })
+          }
         }
-      })
-    })
+    )
+  }
+
+  const handleClickRejoin = () => {
+    setDialog(false)
+    const formData = new FormData()
+    const profile = profileRef.current.files[0]
+    formData.append('email', kakaoEmail)
+    formData.append('fullName', kakaoName)
+    formData.append('username', member.username)
+    formData.append('password', member.password)
+    formData.append('file', profile)
+
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+    postRejoin(formData).then(() => {
+            doLogin({email: kakaoEmail, password: member.password})
+            .then(data => {
+              if (data.ERROR) {
+                console.log(data.ERROR)
+                alert('이메일과 패스워드를 확인해주세요')
+              } else {
+                moveToPath('/')
+              }
+            })
+        }
+    )
+  }
+
+  const handleClickClose = () => {
+    setDialog(false)
   }
 
   return (
       <Box
           component="form"
-          sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
+          sx={{'& .MuiTextField-root': {m: 1, width: '25ch'}}}
           noValidate
           autoComplete="off"
       >
@@ -94,7 +132,7 @@ export default function JoinComponent() {
                 role={undefined}
                 variant="contained"
                 tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
+                startIcon={<CloudUploadIcon/>}
             >
               프로필 이미지
               <VisuallyHiddenInput
@@ -106,7 +144,7 @@ export default function JoinComponent() {
             <Avatar
                 alt="Remy Sharp"
                 src=""
-                sx={{ width: 56, height: 56 }}
+                sx={{width: 56, height: 56}}
             />
           </Stack>
           <TextField
@@ -127,10 +165,20 @@ export default function JoinComponent() {
           />
         </Stack>
         <Button variant="outlined" disableElevation
-        onClick={handleJoin}
+                onClick={handleJoin}
         >
           회원가입
         </Button>
+        <DialogButtonComponent
+        open={dialog}
+        title={'재가입'}
+        content={'해당 카카오 계정으로 가입기록이 있습니다 '
+            + '재가입하시겠습니까?'}
+        leftBtn={'취소'}
+        rightBtn={'재가입'}
+        handleClickLeft={handleClickClose}
+        handleClickRight={handleClickRejoin}
+        />
       </Box>
   );
 }
