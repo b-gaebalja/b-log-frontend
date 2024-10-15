@@ -13,7 +13,7 @@ function AccountMenu() {
     user: {
       name: memberInfo.username,
       email: memberInfo.email,
-      image: "https://ddipddipddip.s3.amazonaws.com/post/4/1728981670006_5.jpg"
+      image: memberInfo.imageUrl
     },
   };
   const [session, setSession] = React.useState(demoSession);
