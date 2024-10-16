@@ -36,7 +36,7 @@ export default function JoinComponent() {
 
   const [member, setMember] = useState(initState)
   const profileRef = useRef()
-  const {doLogin, moveToPath} = useCustomLogin()
+  const {doLogin, moveToPath,moveToLogin} = useCustomLogin()
   const kakaoEmail = useLocation().state.email
   const kakaoName = useLocation().state.name
   const [dialog, setDialog] = useState(false)
@@ -54,10 +54,6 @@ export default function JoinComponent() {
     formData.append('username', member.username)
     formData.append('password', member.password)
 
-
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
     postJoin(formData).then(data => {
           if (data.FAIL) {
             setDialog(true)
@@ -72,16 +68,7 @@ export default function JoinComponent() {
             postAdd(formProfile).then().catch((err)=>{
               console.error(err)
             })
-
-            doLogin({email: kakaoEmail, password: member.password})
-            .then(data => {
-              if (data.ERROR) {
-                console.log(data.ERROR)
-                alert('이메일과 패스워드를 확인해주세요')
-              } else {
-                moveToPath('/')
-              }
-            })
+            moveToLogin()
           }
         }
     )
