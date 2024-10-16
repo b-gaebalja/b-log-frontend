@@ -27,7 +27,7 @@ function ListMyComponent() {
                 id: post.id,
                 img: post.representativeImageUrl || 'https://via.placeholder.com/248',
                 title: post.content,
-                author: post.username
+                author: '@' + post.username
             }));
 
             setPostData(mappedData);
