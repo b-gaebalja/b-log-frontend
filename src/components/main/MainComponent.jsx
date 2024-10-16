@@ -45,7 +45,6 @@ export default function MainComponent() {
         <div>
           <Outlet/>
         </div>
-        <PageComponent/>
       </>
   );
 }
