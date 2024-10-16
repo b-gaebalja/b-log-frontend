@@ -21,7 +21,7 @@ const loginSlice = createSlice({
       return {email: action.payload.email}
     },*/
     logout: () => {
-      removeCookie('member')
+      removeCookie('user')
       return {...initState}
     }
   },
@@ -35,10 +35,12 @@ const loginSlice = createSlice({
       const email = payload.email
       const userId = payload.userId
       const username = payload.username
+      const profile = payload.imageUrl
       return {
         email,
         userId,
-        username
+        username,
+        profile
       }
     })
     .addCase(loginPostAsync.pending,(state,action)=>{

@@ -10,9 +10,9 @@ function IndexPage(props) {
 
     const location = useLocation()
     const initState = () => {
-        if (location.pathname === '/board/add') {
+        if (location.pathname === '/post/add') {
             return '2'
-        } else if (location.pathname === '/board/scrap') {
+        } else if (location.pathname === '/post/scrap') {
             return '3'
         } else {
             return '1'

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -16,14 +15,15 @@ const style = {
   p: 4,
 };
 
-export default function ResultModal({title,content,handleClose}) {
+export default function ResultModal({title,content,handleClose,open}) {
   return (
       <div>
         <Modal
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
-         open>
+            open={open}
+        >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
               {title}

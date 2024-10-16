@@ -29,7 +29,7 @@ export default function ShareMenu({id}) {
     console.log(`클릭함 ${event.currentTarget.tabIndex}`)
     setAnchorEl(null);
     if(event.currentTarget.tabIndex===0){
-    navigate(`/board/${id}`)
+    navigate(`/post/${id}`)
     }
 
 

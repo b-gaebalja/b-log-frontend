@@ -3,17 +3,18 @@ import Editor from '@toast-ui/editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
 import Button from "@mui/material/Button";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import {useSelector} from "react-redux";
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-javascript.min.js';
-import {postAdd} from "../../api/boardApi.jsx";
 
-function AddByEditorComponent() {
+function ModifyByEditorComponent() {
     const editorRef = useRef(null);
     const editorInstance = useRef(null); // 에디터 인스턴스를 위한 useRef 추가
     const [content, setContent] = useState(''); // 에디터 콘텐츠 상태 추가
     const navigate = useNavigate()
+    const contentForModify = useSelector(state => state.postSlice)
 
     useEffect(() => {
         if (editorRef.current) {
@@ -30,7 +31,7 @@ function AddByEditorComponent() {
                 ],
                 previewStyle: 'vertical',
                 height: '500px',
-                initialValue: '',
+                initialValue: contentForModify,
                 // theme: 'dark', // 테마 설정
             });
 
@@ -62,28 +63,19 @@ function AddByEditorComponent() {
         };
     }, []);
 
+    const {id} = useParams();
+
     // 제출 핸들러
     const handleSubmit = () => {
-        const formData = new FormData();
-        // TODO: 회원 ID 연결
-        formData.append('userId', 1);
-        formData.append('content', content);
-
-        postAdd(formData).then(response => {
-            navigate(`../${response.headers.location.split('/').pop()}`);
-        })
-            .catch((error) => {
-                console.log(error);
-                alert('게시글 저장에 실패했습니다.')
-            })
+        navigate({pathname: `../${id}`})
     };
 
     useEffect(() => {
-        if (content) {
+        if (contentForModify) {
             // Prism.js로 코드 하이라이팅
             Prism.highlightAll();
         }
-    }, [content]);
+    }, [contentForModify, content]);
 
     return (
         <div>
@@ -91,9 +83,9 @@ function AddByEditorComponent() {
             <Button
                 onClick={handleSubmit}
 
-            >작성하기</Button> {/* 제출 버튼 */}
+            >수정하기</Button> {/* 제출 버튼 */}
         </div>
     );
 }
 
-export default AddByEditorComponent;
+export default ModifyByEditorComponent;

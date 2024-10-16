@@ -6,9 +6,10 @@ import AddIcon from '@mui/icons-material/Add';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import {useNavigate} from "react-router-dom";
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import useCustomMove from "../../../hooks/useCustomMove.jsx";
 
 function CustomSettingsMenu(props) {
-  const { open, anchorEl, handleMenuClose, handleEnter, handleLeave } = props;
+  const { open, anchorEl,  handleEnter, handleLeave } = props;
 
   return (
       <Menu
@@ -35,8 +36,7 @@ function CustomSettingsMenu(props) {
             }}
             onMouseLeave={handleLeave}
         >
-          <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-          <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+
         </MenuList>
       </Menu>
   );
@@ -57,20 +57,8 @@ export default function CustomMenu() {
 
   const [subMenuAnchorEl, setSubMenuAnchorEl] = React.useState(null);
   const subMenuOpen = Boolean(subMenuAnchorEl);
+  const {moveToPath} = useCustomMove()
 
-  const handleTriggerEnter = React.useCallback((event) => {
-    setSubMenuAnchorEl(event.currentTarget);
-  }, []);
-
-  const handleTriggerLeave = React.useCallback(() => {
-    // Wait for 300ms to see if the mouse has moved to the sub menu
-    setTimeout(() => {
-      if (mouseOnSubMenu.current) {
-        return;
-      }
-      setSubMenuAnchorEl(null);
-    }, 300);
-  }, []);
 
   const handleSubMenuEnter = React.useCallback(() => {
     mouseOnSubMenu.current = true;
@@ -88,10 +76,15 @@ export default function CustomMenu() {
     setSubMenuAnchorEl(null);
   }, []);
 
+  const handleClickSetting = () => {
+    console.log('클릭 세팅')
+    moveToPath('/users/account')
+  }
+
   return (
       <MenuList dense disablePadding>
         <MenuItem
-            onClick={() => navigate('/board/listMy')}
+            onClick={() => navigate('/post/listMy')}
             component="button"
             sx={{
               justifyContent: 'flex-start',
@@ -104,7 +97,7 @@ export default function CustomMenu() {
           내 스터디로그
         </MenuItem>
         <MenuItem
-            onClick={() => navigate('/board/add')}
+            onClick={() => navigate('/post/add')}
             component="button"
             sx={{
               justifyContent: 'flex-start',
@@ -117,7 +110,7 @@ export default function CustomMenu() {
           새 글 작성
         </MenuItem>
         <MenuItem
-            onClick={()=>navigate('/board/scrap')}
+            onClick={()=>navigate('/post/scrap')}
             component="button"
             sx={{
               justifyContent: 'flex-start',
@@ -130,29 +123,21 @@ export default function CustomMenu() {
           나의 스크랩
         </MenuItem>
         <MenuItem
-            onMouseEnter={handleTriggerEnter}
-            onMouseLeave={handleTriggerLeave}
             component="button"
             sx={{
               justifyContent: 'flex-start',
               width: '100%',
             }}
+            onClick={handleClickSetting}
         >
           <ListItemIcon>
             <SettingsIcon />
           </ListItemIcon>
-          Settings
+          설정
         </MenuItem>
 
 
         <Divider />
-        <CustomSettingsMenu
-            open={subMenuOpen}
-            anchorEl={subMenuAnchorEl}
-            handleEnter={handleSubMenuEnter}
-            handleLeave={handleSubMenuLeave}
-            handleMenuClose={handleSubMenuClose}
-        />
       </MenuList>
   );
 }
