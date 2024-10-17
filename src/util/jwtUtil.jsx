@@ -44,7 +44,7 @@ const beforeRes = async (res) => {
     setCookie('user',JSON.stringify(memberCookieValue),1)
 
     const originalRequest = res.config
-    originalRequest.headers.Authorization = `Bearer ${result.accessToken}`
+    originalRequest.headers.Authorization = `Bearer ${result.access_token}`
     return axios(originalRequest);
   }
 
