@@ -20,15 +20,21 @@ export const getUser = async (email) => {
   return (await axios.post(`${USER}/user`, email)).data
 }
 
-export const putUsername = async (userId, username) => {
-  return (await jwtAxios.put(`${USER}/${userId}/username`, username)).data
+export const patchUsername = async (userId, username) => {
+  return (await jwtAxios.patch(`${USER}/${userId}/username`, {username})).data
 }
 
-export const putPassword = async (userId, password) => {
-  return (await jwtAxios.put(`${USER}/${userId}/password`, password)).data
+export const patchPassword = async (userId, password) => {
+  return (await jwtAxios.patch(`${USER}/${userId}/password`, {password})).data
 }
 
 export const deleteUser = async (userId, user) => {
   console.log(user)
   return (await jwtAxios.delete(`${USER}/${userId}`, {data:user})).data
+}
+
+export const postRejoin = async (user) => {
+  console.log(user)
+  const header = {headers: {'Content-Type': 'multipart/form-data'}}
+  return (await axios.post(`${USER}/reuser`,user,header)).data
 }

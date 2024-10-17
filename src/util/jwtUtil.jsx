@@ -23,8 +23,8 @@ const beforeReq = (config) => {
         }
     )
   }
-  const {accessToken} = memberInfo
-  config.headers.Authorization = `Bearer ${accessToken}`
+  const {access_token} = memberInfo
+  config.headers.Authorization = `Bearer ${access_token}`
   return config
 }
 
@@ -34,18 +34,17 @@ const requestFail = (err) => {
 
 const beforeRes = async (res) => {
   const data = res.data
-
   if (data && data.ERROR === 'ERROR_ACCESS_TOKEN') {
     const memberCookieValue = getCookie('user')
-    const result = await refreshJwt(memberCookieValue.accessToken,
-        memberCookieValue.refreshToken)
-    memberCookieValue.accessToken = result.accessToken
-    memberCookieValue.refreshToken = result.refreshToken
+    const result = await refreshJwt(memberCookieValue.access_token,
+        memberCookieValue.refresh_token)
+    memberCookieValue.access_token = result.access_token
+    memberCookieValue.refresh_token = result.refresh_token
 
     setCookie('user',JSON.stringify(memberCookieValue),1)
 
     const originalRequest = res.config
-    originalRequest.headers.Authorization = `Bearer ${result.accessToken}`
+    originalRequest.headers.Authorization = `Bearer ${result.access_token}`
     return axios(originalRequest);
   }
 

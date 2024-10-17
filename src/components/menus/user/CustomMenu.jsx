@@ -123,8 +123,6 @@ export default function CustomMenu() {
           나의 스크랩
         </MenuItem>
         <MenuItem
-            // onMouseEnter={handleTriggerEnter}
-            // onMouseLeave={handleTriggerLeave}
             component="button"
             sx={{
               justifyContent: 'flex-start',
@@ -140,13 +138,6 @@ export default function CustomMenu() {
 
 
         <Divider />
-        <CustomSettingsMenu
-            open={subMenuOpen}
-            anchorEl={subMenuAnchorEl}
-            handleEnter={handleSubMenuEnter}
-            handleLeave={handleSubMenuLeave}
-            handleMenuClose={handleSubMenuClose}
-        />
       </MenuList>
   );
 }
