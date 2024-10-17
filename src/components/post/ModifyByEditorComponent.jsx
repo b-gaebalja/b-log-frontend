@@ -8,17 +8,41 @@ import {useSelector} from "react-redux";
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-javascript.min.js';
+import useCustomLogin from "../../hooks/useCustomLogin.jsx";
+import {getPost, patchModify} from "../../api/postApi.js";
+import {postAdd} from "../../api/imageApi.js";
+import ResultModal from "../common/ResultModal.jsx";
 
-function ModifyByEditorComponent() {
+export default function ModifyByEditorComponent() {
     const editorRef = useRef(null);
-    const editorInstance = useRef(null); // 에디터 인스턴스를 위한 useRef 추가
-    const [content, setContent] = useState(''); // 에디터 콘텐츠 상태 추가
-    const navigate = useNavigate()
-    const contentForModify = useSelector(state => state.postSlice)
+    const editorInstance = useRef(null);
+    const [content, setContent] = useState('');
+    const navigate = useNavigate();
+    const contentForModify = useSelector(state => state.postSlice);
+    const {loginState, doLogout, moveToPath, isLogin, moveToLoginReturn} = useCustomLogin();
+    const [imagePreviews, setImagePreviews] = useState([]);
+    const [result, setResult] = useState(false);
+    const [redirectPath, setRedirectPath] = useState('');
+    const {id} = useParams();
+
+    if (!isLogin) {
+        return moveToLoginReturn();
+    }
+
+    useEffect(() => {
+        getPost(id).then(response => {
+            const postData = response.data;
+            setContent(postData.content);
+            if (editorInstance.current) {
+                editorInstance.current.setMarkdown(postData.content); // 에디터 상태 설정
+            }
+        }).catch(error => {
+            console.error('기존 게시글 불러오기에 실패했습니다.', error);
+        });
+    }, [id]);
 
     useEffect(() => {
         if (editorRef.current) {
-            // 에디터 인스턴스 초기화
             editorInstance.current = new Editor({
                 el: editorRef.current,
                 toolbarItems: [
@@ -31,48 +55,61 @@ function ModifyByEditorComponent() {
                 ],
                 previewStyle: 'vertical',
                 height: '500px',
-                initialValue: contentForModify,
-                // theme: 'dark', // 테마 설정
+                initialValue: content, // 에디터 초기값 설정
+                theme: 'dark',
             });
 
-            // addImageBlobHook 설정
             editorInstance.current.addHook('addImageBlobHook', async (blob, callback) => {
                 const formData = new FormData();
                 formData.append('image', blob);
+                formData.append('targetType', 'POST');
+                formData.append('targetId', id);
 
-                /* try {
-                  const response = await axios.post('/api', formData); // API 요청
-                  callback(response.data.url, blob.name); // URL과 이미지 이름을 callback으로 전달
-                } catch (error) {
-                  console.error('Image upload failed:', error);
-                } */
-                callback('...' + 'localhost3000', blob.name);
+                postAdd(formData).then(response => {
+                    const imageUrl = response.data.url;
+                    setImagePreviews(prev => [...prev, imageUrl]);
+                    callback(imageUrl, blob.name);
+                }).catch((error) => {
+                    console.error(error);
+                    alert('이미지 수정에 실패했습니다.');
+                });
             });
 
-            // 에디터에서 변경 사항 감지
             editorInstance.current.on('change', () => {
-                setContent(editorInstance.current.getMarkdown()); // 상태 업데이트
+                // 상태를 에디터 인스턴스에서 직접 가져와 업데이트
+                setContent(editorInstance.current.getMarkdown());
             });
         }
 
-        // 컴포넌트가 언마운트될 때 에디터를 정리
         return () => {
             if (editorInstance.current) {
-                editorInstance.current.destroy(); // destroy() 메서드를 사용하여 정리
+                editorInstance.current.destroy();
             }
         };
     }, []);
 
-    const {id} = useParams();
-
-    // 제출 핸들러
     const handleSubmit = () => {
-        navigate({pathname: `../${id}`})
+        const formData = new FormData();
+
+        formData.append('id', id);
+        formData.append('content', content);
+
+        patchModify(formData).then(() => {
+            setResult(true);
+            setRedirectPath('../' + id);
+        }).catch((error) => {
+            console.log(error);
+            alert('게시글 수정에 실패했습니다.');
+        });
+    };
+
+    const closeModal = () => {
+        setResult(false);
+        navigate(redirectPath);
     };
 
     useEffect(() => {
         if (contentForModify) {
-            // Prism.js로 코드 하이라이팅
             Prism.highlightAll();
         }
     }, [contentForModify, content]);
@@ -80,12 +117,15 @@ function ModifyByEditorComponent() {
     return (
         <div>
             <div ref={editorRef}></div>
-            <Button
-                onClick={handleSubmit}
-
-            >수정하기</Button> {/* 제출 버튼 */}
+            <Button onClick={handleSubmit}>수정하기</Button>
+            {result ? (
+                <ResultModal
+                    title={'게시글 수정'}
+                    content={'게시글이 수정되었습니다.'}
+                    handleClose={closeModal}
+                    open={result}
+                />
+            ) : null}
         </div>
     );
 }
-
-export default ModifyByEditorComponent;

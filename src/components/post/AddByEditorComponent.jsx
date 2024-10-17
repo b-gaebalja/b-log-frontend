@@ -9,15 +9,14 @@ import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-javascript.min.js';
 import {patchComplete, postRegister} from "../../api/postApi.js";
 import {postAdd} from "../../api/imageApi.js";
-import UseCustomLogin from "../../hooks/useCustomLogin.jsx";
-import ResultModal from "../common/ResultModal.jsx";
 import useCustomLogin from "../../hooks/useCustomLogin.jsx";
+import ResultModal from "../common/ResultModal.jsx";
 
-function AddByEditorComponent() {
+export default function AddByEditorComponent() {
     const editorRef = useRef(null);
-    const editorInstance = useRef(null); // 에디터 인스턴스를 위한 useRef 추가
+    const editorInstance = useRef(null);
     const idRef = useRef(null);
-    const [content, setContent] = useState('최초 등록'); // 에디터 콘텐츠 상태 추가
+    const [content, setContent] = useState('최초 등록');
     const {loginState, doLogout, moveToPath, isLogin, moveToLoginReturn}
         = useCustomLogin()
     const [imagePreviews, setImagePreviews] = useState([]);
@@ -51,7 +50,6 @@ function AddByEditorComponent() {
 
     useEffect(() => {
         if (editorRef.current) {
-            // 에디터 인스턴스 초기화
             editorInstance.current = new Editor({
                 el: editorRef.current,
                 toolbarItems: [
@@ -65,10 +63,9 @@ function AddByEditorComponent() {
                 previewStyle: 'vertical',
                 height: '500px',
                 initialValue: '',
-                // theme: 'dark', // 테마 설정
+                theme: 'dark',
             });
 
-            // addImageBlobHook 설정
             editorInstance.current.addHook('addImageBlobHook', async (blob, callback) => {
                 const formData = new FormData();
                 formData.append('image', blob);
@@ -86,21 +83,18 @@ function AddByEditorComponent() {
                     })
             });
 
-            // 에디터에서 변경 사항 감지
             editorInstance.current.on('change', () => {
-                setContent(editorInstance.current.getMarkdown()); // 상태 업데이트
+                setContent(editorInstance.current.getMarkdown());
             });
         }
 
-        // 컴포넌트가 언마운트될 때 에디터를 정리
         return () => {
             if (editorInstance.current) {
-                editorInstance.current.destroy(); // destroy() 메서드를 사용하여 정리
+                editorInstance.current.destroy();
             }
         };
     }, []);
 
-    // 제출 핸들러
     const handleSubmit = () => {
         const formData = new FormData();
 
@@ -124,7 +118,6 @@ function AddByEditorComponent() {
 
     useEffect(() => {
         if (content) {
-            // Prism.js로 코드 하이라이팅
             Prism.highlightAll();
         }
     }, [content]);
@@ -134,7 +127,7 @@ function AddByEditorComponent() {
             <div ref={editorRef}></div>
             <Button
                 onClick={handleSubmit}
-            >작성하기</Button> {/* 제출 버튼 */}
+            >작성하기</Button>
             {result
                 ? <ResultModal
                     title={'게시글 등록'}
@@ -147,5 +140,3 @@ function AddByEditorComponent() {
         </div>
     );
 }
-
-export default AddByEditorComponent;

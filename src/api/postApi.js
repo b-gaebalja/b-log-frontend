@@ -28,6 +28,15 @@ export const getMyPosts = async (email, page) => {
     return await axios.get(`${POST}/users`, config);
 };
 
+export const getUserPosts = async (email, page) => {
+    const config = {
+        headers: {'Content-Type': 'application/json'},
+        params: {email: email, pageNumber: page}
+    };
+
+    return await axios.get(`${POST}/users`, config);
+};
+
 export const getAllPosts = async (page) => {
     const config = {
         headers: {'Content-Type': 'application/json'},
@@ -36,3 +45,9 @@ export const getAllPosts = async (page) => {
 
     return await axios.get(`${POST}`, config);
 };
+
+export const patchModify = async (modifyParam) => {
+    const header = {headers: {'Content-Type': 'application/json'}}
+
+    return await axios.patch(`${POST}/modify`, modifyParam, header)
+}
