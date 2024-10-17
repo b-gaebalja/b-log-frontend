@@ -23,8 +23,8 @@ const beforeReq = (config) => {
         }
     )
   }
-  const {accessToken} = memberInfo
-  config.headers.Authorization = `Bearer ${accessToken}`
+  const {access_token} = memberInfo
+  config.headers.Authorization = `Bearer ${access_token}`
   return config
 }
 
