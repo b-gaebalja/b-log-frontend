@@ -26,36 +26,34 @@ const ViewerComponent = () => {
     ];
 
     const viewerRef = useRef(null);
-    const viewerInstance = useRef(null); // Viewer 인스턴스를 위한 ref 추가
+    const viewerInstance = useRef(null);
     const {moveToPath} = useCustomMove();
     const [content, setContent] = useState()
 
 
     useEffect(() => {
         if (viewerRef.current) {
-            // Viewer 인스턴스 생성
             viewerInstance.current = Editor.factory({
                 el: viewerRef.current,
                 viewer: true,
                 height: '500px',
-                initialValue: content || '# hello', // 초기 콘텐츠
+                initialValue: content || '# hello',
             });
         }
 
-        // 컴포넌트 언마운트 시 Viewer 인스턴스 정리
         return () => {
             if (viewerInstance.current) {
-                viewerInstance.current.destroy(); // destroy 메서드 호출
+                viewerInstance.current.destroy();
             }
         };
-    }, [content]); // content가 변경될 때마다 Viewer 업데이트
+    }, [content]);
 
     useEffect(() => {
         if (viewerInstance.current) {
             // Prism 하이라이팅 적용
             Prism.highlightAll();
         }
-    }, [content]); // content가 변경될 때마다 하이라이팅 적용
+    }, [content]);
 
     const {id} = useParams();
 
@@ -92,7 +90,7 @@ const ViewerComponent = () => {
                 </SpeedDial>
             </Box>
         </Box>
-    ); // Viewer가 렌더링될 div
+    );
 };
 
 export default ViewerComponent;
