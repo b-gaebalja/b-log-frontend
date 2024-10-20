@@ -1,6 +1,5 @@
 import {lazy, Suspense} from "react";
 import {createBrowserRouter, Navigate} from "react-router-dom";
-import * as React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import postRouter from "./postRouter.jsx";
@@ -14,6 +13,7 @@ const ListBasic = lazy(()=> import("../pages/post/list/ListBasicPage.jsx"))
 const PostIndex = lazy(()=> import("../pages/post/IndexPage.jsx"))
 const NotificationIndex = lazy(()=> import("../pages/notification/IndexPage.jsx"))
 const MemberIndex = lazy(()=> import("../pages/user/IndexPage.jsx"))
+const Error404 = lazy(()=>import("../pages/Error404.jsx"))
 
 const root = createBrowserRouter([
   {
@@ -27,6 +27,10 @@ const root = createBrowserRouter([
       {
         path: 'list/latest',
         element: ''
+      },
+      {
+        path: '*',
+        element: <Suspense fallback={Loading}><Error404/></Suspense>
       }
     ]
   },
