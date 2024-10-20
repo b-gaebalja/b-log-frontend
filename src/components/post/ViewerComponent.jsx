@@ -16,31 +16,53 @@ import ShareIcon from "@mui/icons-material/Share";
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import useCustomMove from "../../hooks/useCustomMove.jsx";
 import { useParams } from "react-router-dom";
-import { getPost } from "../../api/postApi.js";
-import SnsShareComponent2 from "../../components/post/SnsShareComponent2";
+import {addBookmark, getBookmarks, getPost, removeBookmark} from "../../api/postApi.js";
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import CopyUrlComponent from "./CopyUrlComponent.jsx";
 import ShareComponent from "./ShareComponent.jsx";
+import useCustomLogin from "../../hooks/useCustomLogin.jsx";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 const ViewerComponent = () => {
     const actions = [
-        { icon: <FileCopyIcon />, name: '스크랩하기' },
+        { icon: <BookmarkBorderIcon />, name: '스크랩하기' },
         { icon: <ShareIcon />, name: '공유하기' },
         { icon: <AutoFixHighIcon />, name: '수정하기' },
         { icon: <SaveIcon />, name: '저장하기' },
     ];
 
+    const { loginState, moveToLoginReturn, isLogin } = useCustomLogin();
     const viewerRef = useRef(null);
     const viewerInstance = useRef(null);
     const { moveToPath } = useCustomMove();
+    const { id } = useParams();
+
     const [content, setContent] = useState();
     const [openShareDialog, setOpenShareDialog] = useState(false);
-    const { id } = useParams();
-    console.log("id: ", id);
+    const [bookmarks, setBookmarks] = useState([]);
+    const [isBookmarked, setIsBookmarked] = useState(false);
+
+    const fetchBookmarks = async () => {
+        if (!isLogin) return;
+        try {
+            const response = await getBookmarks(loginState.id);
+            const bookmarkIds = Array.from(new Set(response.data));
+            setBookmarks(bookmarkIds);
+            // 현재 포스트가 북마크되어 있는지 확인
+            setIsBookmarked(bookmarkIds.includes(Number(id)));
+        } catch (error) {
+            console.error("Failed to fetch bookmarks:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchBookmarks(); // 컴포넌트 마운트 시 북마크 로드
+    }, [isLogin]); // isLogin이 변경될 때마다 북마크와 게시글 재조회
+
+
 
     useEffect(() => {
         if (viewerRef.current) {
@@ -73,15 +95,19 @@ const ViewerComponent = () => {
         });
     }, [id]);
 
-    const handleShare = async () => {
+    const handleBookmark = async () => {
         try {
-            const response = await axios.post(`/sharePosts/${id}/shares`);
-            if (response.status === 201) {
-                alert('스크랩 성공');
+            if (isBookmarked) {
+                await removeBookmark(id);
+                setBookmarks(bookmarks.filter(bookmarkId => bookmarkId !== Number(id)));
+                setIsBookmarked(false);
+            } else {
+                await addBookmark(id);
+                setBookmarks([...bookmarks, Number(id)]);
+                setIsBookmarked(true);
             }
         } catch (error) {
-            console.error('스크랩 실패:', error.response);
-            alert('스크랩 실패');
+            console.error("북마크 실패:", error);
         }
     };
 
@@ -105,7 +131,7 @@ const ViewerComponent = () => {
                                 } else if (action.name === '공유하기') {
                                     setOpenShareDialog(true);
                                 } else if (action.name === '스크랩하기') {
-                                    handleShare();
+                                    handleBookmark(id);
                                 }
                             }}
                         />
