@@ -121,6 +121,7 @@ const ViewerComponent = () => {
                         />
                     ))}
                 </SpeedDial>
+
             </Box>
 
             {/* 삭제하기 모달 */}
@@ -154,7 +155,6 @@ const ViewerComponent = () => {
                     <Button onClick={() => setOpenShareDialog(false)}>닫기</Button>
                 </DialogActions>
             </Dialog>
-            <CommentComponent postId={id}/>
         </Box>
     );
 };
