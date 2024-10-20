@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useCustomLogin from '../../hooks/useCustomLogin.jsx';
-import {commentDelete, commentModify, commentRegister, getComment} from "../../api/commentApi.jsx";
+import {commentDelete, commentModify, commentRegister, getComment} from "../../api/commentApi.js";
 
 const CommentComponent = ({ postId }) => {
     const [comments, setComments] = useState([]);
