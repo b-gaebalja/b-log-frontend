@@ -15,22 +15,31 @@ const CommentComponent = ({ postId }) => {
     const [newComment, setNewComment] = useState('');
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editingCommentContent, setEditingCommentContent] = useState('');
-    const { loginState } = useCustomLogin(); // 로그인 상태와 이메일 가져오기
+    const { loginState } = useCustomLogin();
 
     useEffect(() => {
         loadComments();
     }, [postId]);
 
     const loadComments = async () => {
-        const response = await getComment(postId);
-        setComments(response.data || []); // 댓글 데이터가 없을 경우 빈 배열로 설정
+        try {
+            const response = await getComment(postId);
+            setComments(response.data || []);
+        } catch (error) {
+            console.error("Failed to load comments", error);
+            setComments([]);
+        }
     };
 
     const handleCommentSubmit = async () => {
         if (newComment.trim()) {
-            await commentRegister({ content: newComment, email: loginState.email }); // 로그인한 사용자의 이메일 사용
-            setNewComment('');
-            loadComments();
+            try {
+                await commentRegister({ content: newComment, email: loginState.email });
+                setNewComment('');
+                loadComments();
+            } catch (error) {
+                console.error("Failed to submit comment", error);
+            }
         }
     };
 
@@ -40,20 +49,28 @@ const CommentComponent = ({ postId }) => {
     };
 
     const handleUpdateComment = async () => {
-        await commentModify({ id: editingCommentId, content: editingCommentContent, email: loginState.email }); // 수정 시에도 이메일 사용
-        setEditingCommentId(null);
-        setEditingCommentContent('');
-        loadComments();
+        try {
+            await commentModify({ id: editingCommentId, content: editingCommentContent, email: loginState.email });
+            setEditingCommentId(null);
+            setEditingCommentContent('');
+            loadComments();
+        } catch (error) {
+            console.error("Failed to update comment", error);
+        }
     };
 
     const handleDeleteComment = async (commentId) => {
-        await commentDelete(commentId);
-        loadComments();
+        try {
+            await commentDelete(commentId);
+            loadComments();
+        } catch (error) {
+            console.error("Failed to delete comment", error);
+        }
     };
 
     return (
         <div>
-            {loginState.isLoggedIn && ( // 로그인한 경우에만 댓글 작성 UI 표시
+            {loginState.isLoggedIn && (
                 <>
                     <TextField
                         label="댓글 작성"
@@ -76,7 +93,7 @@ const CommentComponent = ({ postId }) => {
                         <ListItemText primary="아직 작성된 댓글이 없습니다." />
                     </ListItem>
                 ) : (
-                    comments.map((comment) => (
+                    Array.isArray(comments) && comments.map((comment) => (
                         <ListItem key={comment.id}>
                             {editingCommentId === comment.id ? (
                                 <div>
