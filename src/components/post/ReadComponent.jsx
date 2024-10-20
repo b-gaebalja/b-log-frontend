@@ -9,6 +9,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import CommentComponent from "../comment/CommentComponent.jsx";
 
 function ReadComponent(props) {
     const actions = [
@@ -55,6 +56,7 @@ function ReadComponent(props) {
                     ))}
                 </SpeedDial>
             </Box>
+            <CommentComponent postId={props.postId}/>
         </Box>
     );
 }
