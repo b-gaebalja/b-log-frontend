@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useCustomLogin from '../../hooks/useCustomLogin.jsx';
-import {commentDelete, commentModify, commentRegister, getComment} from "../../api/commentApi.jsx";
+import { commentDelete, commentModify, commentRegister, getComment } from "../../api/commentApi.jsx";
 
 const CommentComponent = ({ postId }) => {
     const [comments, setComments] = useState([]);
@@ -23,7 +23,7 @@ const CommentComponent = ({ postId }) => {
 
     const loadComments = async () => {
         const response = await getComment(postId);
-        setComments(response.data);
+        setComments(response.data || []); // 댓글 데이터가 없을 경우 빈 배열로 설정
     };
 
     const handleCommentSubmit = async () => {
@@ -53,42 +53,56 @@ const CommentComponent = ({ postId }) => {
 
     return (
         <div>
-            <TextField
-                label="댓글 작성"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                fullWidth
-                multiline
-                rows={3}
-                variant="outlined"
-            />
-            <Button onClick={handleCommentSubmit} variant="contained" color="primary">
-                댓글 작성
-            </Button>
+            {loginState.isLoggedIn && ( // 로그인한 경우에만 댓글 작성 UI 표시
+                <>
+                    <TextField
+                        label="댓글 작성"
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        fullWidth
+                        multiline
+                        rows={3}
+                        variant="outlined"
+                    />
+                    <Button onClick={handleCommentSubmit} variant="contained" color="primary">
+                        댓글 작성
+                    </Button>
+                </>
+            )}
 
             <List>
-                {comments.map((comment) => (
-                    <ListItem key={comment.id}>
-                        {editingCommentId === comment.id ? (
-                            <div>
-                                <TextField
-                                    value={editingCommentContent}
-                                    onChange={(e) => setEditingCommentContent(e.target.value)}
-                                    fullWidth
-                                />
-                                <Button onClick={handleUpdateComment}>수정</Button>
-                            </div>
-                        ) : (
-                            <ListItemText primary={comment.content} />
-                        )}
-                        <IconButton onClick={() => handleEditComment(comment)}>
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => handleDeleteComment(comment.id)}>
-                            <DeleteIcon />
-                        </IconButton>
+                {comments.length === 0 ? (
+                    <ListItem>
+                        <ListItemText primary="아직 작성된 댓글이 없습니다." />
                     </ListItem>
-                ))}
+                ) : (
+                    comments.map((comment) => (
+                        <ListItem key={comment.id}>
+                            {editingCommentId === comment.id ? (
+                                <div>
+                                    <TextField
+                                        value={editingCommentContent}
+                                        onChange={(e) => setEditingCommentContent(e.target.value)}
+                                        fullWidth
+                                    />
+                                    <Button onClick={handleUpdateComment}>수정</Button>
+                                </div>
+                            ) : (
+                                <ListItemText primary={comment.content} />
+                            )}
+                            {loginState.isLoggedIn && (
+                                <>
+                                    <IconButton onClick={() => handleEditComment(comment)}>
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton onClick={() => handleDeleteComment(comment.id)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </>
+                            )}
+                        </ListItem>
+                    ))
+                )}
             </List>
         </div>
     );
