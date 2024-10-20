@@ -7,55 +7,30 @@ import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { commentDelete, commentModify, commentRegister, getComment } from "../../api/commentApi.js";
 import useCustomLogin from '../../hooks/useCustomLogin.jsx';
+import {commentDelete, commentModify, commentRegister, getComment} from "../../api/commentApi.jsx";
 
 const CommentComponent = ({ postId }) => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editingCommentContent, setEditingCommentContent] = useState('');
-    const [replyToCommentId, setReplyToCommentId] = useState(null); // 대댓글 입력창 표시 여부
-    const { loginState, moveToLoginReturn, isLogin } = useCustomLogin();
+    const { loginState } = useCustomLogin(); // 로그인 상태와 이메일 가져오기
 
     useEffect(() => {
         loadComments();
     }, [postId]);
 
     const loadComments = async () => {
-        try {
-            const response = await getComment(postId);
-            if (response?.data) {
-                setComments(response.data);
-            }
-        } catch (error) {
-            console.error("Failed to load comments", error);
-            setComments([]);
-        }
+        const response = await getComment(postId);
+        setComments(response.data);
     };
 
     const handleCommentSubmit = async () => {
-        if (!isLogin) {
-            return moveToLoginReturn();
-        }
-
         if (newComment.trim()) {
-            try {
-                await commentRegister({ content: newComment, email: loginState.email , postId:postId});
-                setNewComment('');
-                loadComments();
-            } catch (error) {
-                console.error("Failed to submit comment", error);
-            }
-        }
-    };
-
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleCommentSubmit();
+            await commentRegister({ content: newComment, email: loginState.email }); // 로그인한 사용자의 이메일 사용
+            setNewComment('');
+            loadComments();
         }
     };
 
@@ -65,132 +40,57 @@ const CommentComponent = ({ postId }) => {
     };
 
     const handleUpdateComment = async () => {
-        try {
-            await commentModify({ id: editingCommentId, content: editingCommentContent, email: loginState.email , postId:postId});
-            setEditingCommentId(null);
-            setEditingCommentContent('');
-            loadComments();
-        } catch (error) {
-            console.error("Failed to update comment", error);
-        }
+        await commentModify({ id: editingCommentId, content: editingCommentContent, email: loginState.email }); // 수정 시에도 이메일 사용
+        setEditingCommentId(null);
+        setEditingCommentContent('');
+        loadComments();
     };
 
     const handleDeleteComment = async (commentId) => {
-        try {
-            await commentDelete(commentId);
-            loadComments();
-        } catch (error) {
-            console.error("Failed to delete comment", error);
-        }
-    };
-
-    const toggleReplyInput = (commentId) => {
-        setReplyToCommentId(replyToCommentId === commentId ? null : commentId);
+        await commentDelete(commentId);
+        loadComments();
     };
 
     return (
-        <Box>
-            {/* 댓글 목록 */}
-            <List>
-                {comments.length === 0 ? (
-                    <ListItem>
-                        <ListItemText primary="아직 작성된 댓글이 없습니다." />
-                    </ListItem>
-                ) : (
-                    Array.isArray(comments) && comments.map((comment) => (
-                        <ListItem key={comment.id} alignItems="flex-start" sx={{ borderBottom: '1px solid #ddd' }}>
-                            {editingCommentId === comment.id ? (
-                                <Box>
-                                    <TextField
-                                        value={editingCommentContent}
-                                        onChange={(e) => setEditingCommentContent(e.target.value)}
-                                        fullWidth
-                                    />
-                                    <Button onClick={handleUpdateComment} variant="contained" sx={{ mt: 1 }}>수정</Button>
-                                </Box>
-                            ) : (
-                                <ListItemText
-                                    primary={
-                                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                                            <Typography variant="body2" color="textSecondary">
-                                                {comment.user.email}
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                {comment.content}
-                                            </Typography>
-                                            <Typography variant="body2" color="textSecondary">
-                                                {new Date(comment.createdAt).toLocaleDateString()}
-                                            </Typography>
-                                        </Box>
-                                    }
-                                />
-                            )}
-                            {isLogin && (
-                                <Box>
-                                    <IconButton onClick={() => handleEditComment(comment)} size="small">
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => handleDeleteComment(comment.id)} size="small">
-                                        <DeleteIcon />
-                                    </IconButton>
-                                    <Button
-                                        variant="text"
-                                        onClick={() => toggleReplyInput(comment.id)}
-                                        sx={{ textTransform: 'none', fontSize: '0.875rem' }}
-                                    >
-                                        답글 달기
-                                    </Button>
-                                    {/* 대댓글 입력창 */}
-                                    {replyToCommentId === comment.id && (
-                                        <Box display="flex" alignItems="center" mt={1}>
-                                            <TextField
-                                                label="대댓글을 입력하세요"
-                                                fullWidth
-                                                multiline
-                                                rows={1}
-                                                variant="outlined"
-                                                onKeyPress={(e) => e.key === 'Enter' && handleCommentSubmit()} // 대댓글 등록 기능 추가 필요
-                                            />
-                                            <Button
-                                                onClick={handleCommentSubmit}
-                                                variant="contained"
-                                                color="primary"
-                                                sx={{ ml: 2, height: 'fit-content' }}
-                                            >
-                                                등록
-                                            </Button>
-                                        </Box>
-                                    )}
-                                </Box>
-                            )}
-                        </ListItem>
-                    ))
-                )}
-            </List>
+        <div>
+            <TextField
+                label="댓글 작성"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                fullWidth
+                multiline
+                rows={3}
+                variant="outlined"
+            />
+            <Button onClick={handleCommentSubmit} variant="contained" color="primary">
+                댓글 작성
+            </Button>
 
-            {/* 댓글 입력창 */}
-            <Box display="flex" alignItems="center" mb={2}>
-                <TextField
-                    label="댓글을 입력하세요"
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    fullWidth
-                    multiline
-                    rows={1}
-                    variant="outlined"
-                    onKeyPress={handleKeyPress}
-                    onFocus={() => !isLogin && moveToLoginReturn("/users/login")}
-                />
-                <Button
-                    onClick={handleCommentSubmit}
-                    variant="contained"
-                    color="primary"
-                    sx={{ ml: 2, height: 'fit-content' }}
-                >
-                    등록
-                </Button>
-            </Box>
-        </Box>
+            <List>
+                {comments.map((comment) => (
+                    <ListItem key={comment.id}>
+                        {editingCommentId === comment.id ? (
+                            <div>
+                                <TextField
+                                    value={editingCommentContent}
+                                    onChange={(e) => setEditingCommentContent(e.target.value)}
+                                    fullWidth
+                                />
+                                <Button onClick={handleUpdateComment}>수정</Button>
+                            </div>
+                        ) : (
+                            <ListItemText primary={comment.content} />
+                        )}
+                        <IconButton onClick={() => handleEditComment(comment)}>
+                            <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteComment(comment.id)}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </ListItem>
+                ))}
+            </List>
+        </div>
     );
 };
 

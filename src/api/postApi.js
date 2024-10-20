@@ -53,10 +53,16 @@ export const patchModify = async (modifyParam) => {
     return await jwtAxios.patch(`${POST}/modify`, modifyParam, header)
 }
 
+export const deletePost = async (id) => {
+    const header = {headers: {'Content-Type': 'application/json'}}
+
+    return await jwtAxios.delete(`${POST}/${id}`, header)
+}
+
 // 북마크 추가
 export const addBookmark = async (id) => {
     console.log("북마크 추가 시작");
-    const header = { headers: { 'Content-Type': 'application/json' } };
+    const header = {headers: {'Content-Type': 'application/json'}};
     console.log("postId : ", id);
     return await jwtAxios.post(`${SHARE}/${id}/shares`, {}, header);
 };
@@ -64,7 +70,7 @@ export const addBookmark = async (id) => {
 // 북마크 삭제
 export const removeBookmark = async (postId) => {
     console.log("북마크 제거 시작");
-    const header = { headers: { 'Content-Type': 'application/json' } };
+    const header = {headers: {'Content-Type': 'application/json'}};
     return await jwtAxios.delete(`${SHARE}/delete/${postId}`, header);
 };
 
@@ -72,6 +78,6 @@ export const removeBookmark = async (postId) => {
 export const getBookmarks = async (sharerId) => {
     console.log("북마크 목록 가져오기 시작");
     console.log("sharerId: ", sharerId);
-    const header = { headers: { 'Content-Type': 'application/json' } };
+    const header = {headers: {'Content-Type': 'application/json'}};
     return await jwtAxios.get(`${SHARE}/list/${sharerId}`, header);
 };
