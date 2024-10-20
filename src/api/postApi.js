@@ -44,7 +44,7 @@ export const getAllPosts = async (page) => {
         params: {pageNumber: page}
     };
 
-    return await axios.get(`${POST}`, config);
+    return await jwtAxios.get(`${POST}`, config);
 };
 
 export const patchModify = async (modifyParam) => {
