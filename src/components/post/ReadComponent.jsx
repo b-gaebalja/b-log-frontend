@@ -56,7 +56,6 @@ function ReadComponent(props) {
                     ))}
                 </SpeedDial>
             </Box>
-            <CommentComponent postId={props.postId}/>
         </Box>
     );
 }
