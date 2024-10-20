@@ -6,7 +6,7 @@ const OAUTH_TOKEN_URL = 'https://kauth.kakao.com/oauth/token'
 const REDIRECT_URI = 'https://b-log-coral.vercel.app/users/kakao'
 const REST_API_KEY = import.meta.env.VITE_REST_API_KEY
 export const getKakaoLink = () => {
-  return `${OAUTH_AUTHORIZATION_URL}?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`
+  return `${OAUTH_AUTHORIZATION_URL}?response_type=code&client_id=${REST_API_KEY}&redirect_uri=https://b-log-coral.vercel.app/users/kakao`
 }
 
 export const getAccessToken = async (authCode) => {
