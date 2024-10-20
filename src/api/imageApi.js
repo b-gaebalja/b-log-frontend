@@ -1,8 +1,8 @@
 import {IMAGE} from "./config.js";
-import axios from "axios";
+import jwtAxios from "../util/jwtUtil.jsx";
 
 export const postAdd = async (addParam) => {
     const header = {headers: {'Content-Type': 'multipart/form-data'}}
 
-    return await axios.post(`${IMAGE}`, addParam, header)
+    return await jwtAxios.post(`${IMAGE}`, addParam, header)
 }
