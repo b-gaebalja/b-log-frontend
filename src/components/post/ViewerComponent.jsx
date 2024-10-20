@@ -25,6 +25,7 @@ import Button from '@mui/material/Button';
 import ShareComponent from "./ShareComponent.jsx";
 import useCustomLogin from "../../hooks/useCustomLogin.jsx";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import CommentComponent from "../comment/CommentComponent.jsx";
 
 const ViewerComponent = () => {
     const actions = [
