@@ -114,7 +114,9 @@ const ViewerComponent = () => {
 
     return (
         <Box sx={{ position: 'relative', height: '100vh' }}>
+
             <div ref={viewerRef} style={{ flex: 1 }}></div>
+            <CommentComponent postId={id}/>
             <Box sx={{ position: 'absolute', bottom: '50%', right: 16, transform: 'translateY(50%)' }}>
                 <SpeedDial
                     ariaLabel="SpeedDial openIcon example"
@@ -138,7 +140,9 @@ const ViewerComponent = () => {
                         />
                     ))}
                 </SpeedDial>
+
             </Box>
+
 
             {/* 공유하기 모달 */}
             <Dialog
@@ -156,7 +160,6 @@ const ViewerComponent = () => {
                     <Button onClick={() => setOpenShareDialog(false)}>닫기</Button>
                 </DialogActions>
             </Dialog>
-            <CommentComponent postId={id}/>
         </Box>
     );
 };
