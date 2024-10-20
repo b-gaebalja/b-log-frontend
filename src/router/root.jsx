@@ -21,12 +21,8 @@ const root = createBrowserRouter([
     element:<Suspense fallback={Loading}><Main/></Suspense>,
     children:[
       {
-        path: 'list',
-        element: <Suspense fallback={Loading}><ListBasic/></Suspense>
-      },
-      {
         path: '',
-        element: <Navigate replace to={'list'}/>
+        element: <Suspense fallback={Loading}><ListBasic/></Suspense>
       },
       {
         path: 'list/latest',
