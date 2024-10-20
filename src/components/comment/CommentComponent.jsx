@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getComment, commentRegister, commentModify, commentDelete } from './api/commentApi.jsx';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
@@ -8,7 +7,8 @@ import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import useCustomLogin from '../../hooks/useCustomLogin.jsx'; // 로그인 상태를 가져오는 훅
+import useCustomLogin from '../../hooks/useCustomLogin.jsx';
+import {commentDelete, commentModify, commentRegister, getComment} from "../../api/commentApi.jsx";
 
 const CommentComponent = ({ postId }) => {
     const [comments, setComments] = useState([]);
