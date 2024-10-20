@@ -6,6 +6,8 @@ export const USER = `${API_SERVER_HOST}/users`
 
 export const SHARE = `${API_SERVER_HOST}/sharePosts`
 
+export const COMMENT = `${API_SERVER_HOST}/comment`
+
 export const NOTIFICATION = `${API_SERVER_HOST}/notification`
 
 export const IMAGE = `${API_SERVER_HOST}/images`
