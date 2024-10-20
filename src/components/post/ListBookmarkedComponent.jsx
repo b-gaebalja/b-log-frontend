@@ -24,7 +24,7 @@ function ListBookmarkedComponent() {
             const response = await getBookmarks(loginState.id);
             if (response && response.data) {
                 const bookmarkIds = Array.from(new Set(response.data));
-                console.log("북마크 아이디: ", bookmarkIds);
+                console.log("포스트 아이디: ", bookmarkIds);
 
                 const posts = await Promise.all(
                     bookmarkIds.map(async id => {
