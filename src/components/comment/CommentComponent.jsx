@@ -8,38 +8,29 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useCustomLogin from '../../hooks/useCustomLogin.jsx';
-import { commentDelete, commentModify, commentRegister, getComment } from "../../api/commentApi.jsx";
+import {commentDelete, commentModify, commentRegister, getComment} from "../../api/commentApi.jsx";
 
 const CommentComponent = ({ postId }) => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editingCommentContent, setEditingCommentContent] = useState('');
-    const { loginState } = useCustomLogin();
+    const { loginState } = useCustomLogin(); // 로그인 상태와 이메일 가져오기
 
     useEffect(() => {
         loadComments();
     }, [postId]);
 
     const loadComments = async () => {
-        try {
-            const response = await getComment(postId);
-            setComments(response.data || []);
-        } catch (error) {
-            console.error("Failed to load comments", error);
-            setComments([]);
-        }
+        const response = await getComment(postId);
+        setComments(response.data);
     };
 
     const handleCommentSubmit = async () => {
         if (newComment.trim()) {
-            try {
-                await commentRegister({ content: newComment, email: loginState.email });
-                setNewComment('');
-                loadComments();
-            } catch (error) {
-                console.error("Failed to submit comment", error);
-            }
+            await commentRegister({ content: newComment, email: loginState.email }); // 로그인한 사용자의 이메일 사용
+            setNewComment('');
+            loadComments();
         }
     };
 
@@ -49,77 +40,55 @@ const CommentComponent = ({ postId }) => {
     };
 
     const handleUpdateComment = async () => {
-        try {
-            await commentModify({ id: editingCommentId, content: editingCommentContent, email: loginState.email });
-            setEditingCommentId(null);
-            setEditingCommentContent('');
-            loadComments();
-        } catch (error) {
-            console.error("Failed to update comment", error);
-        }
+        await commentModify({ id: editingCommentId, content: editingCommentContent, email: loginState.email }); // 수정 시에도 이메일 사용
+        setEditingCommentId(null);
+        setEditingCommentContent('');
+        loadComments();
     };
 
     const handleDeleteComment = async (commentId) => {
-        try {
-            await commentDelete(commentId);
-            loadComments();
-        } catch (error) {
-            console.error("Failed to delete comment", error);
-        }
+        await commentDelete(commentId);
+        loadComments();
     };
 
     return (
         <div>
-            {loginState.isLoggedIn && (
-                <>
-                    <TextField
-                        label="댓글 작성"
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        fullWidth
-                        multiline
-                        rows={3}
-                        variant="outlined"
-                    />
-                    <Button onClick={handleCommentSubmit} variant="contained" color="primary">
-                        댓글 작성
-                    </Button>
-                </>
-            )}
+            <TextField
+                label="댓글 작성"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                fullWidth
+                multiline
+                rows={3}
+                variant="outlined"
+            />
+            <Button onClick={handleCommentSubmit} variant="contained" color="primary">
+                댓글 작성
+            </Button>
 
             <List>
-                {comments.length === 0 ? (
-                    <ListItem>
-                        <ListItemText primary="아직 작성된 댓글이 없습니다." />
+                {comments.map((comment) => (
+                    <ListItem key={comment.id}>
+                        {editingCommentId === comment.id ? (
+                            <div>
+                                <TextField
+                                    value={editingCommentContent}
+                                    onChange={(e) => setEditingCommentContent(e.target.value)}
+                                    fullWidth
+                                />
+                                <Button onClick={handleUpdateComment}>수정</Button>
+                            </div>
+                        ) : (
+                            <ListItemText primary={comment.content} />
+                        )}
+                        <IconButton onClick={() => handleEditComment(comment)}>
+                            <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteComment(comment.id)}>
+                            <DeleteIcon />
+                        </IconButton>
                     </ListItem>
-                ) : (
-                    Array.isArray(comments) && comments.map((comment) => (
-                        <ListItem key={comment.id}>
-                            {editingCommentId === comment.id ? (
-                                <div>
-                                    <TextField
-                                        value={editingCommentContent}
-                                        onChange={(e) => setEditingCommentContent(e.target.value)}
-                                        fullWidth
-                                    />
-                                    <Button onClick={handleUpdateComment}>수정</Button>
-                                </div>
-                            ) : (
-                                <ListItemText primary={comment.content} />
-                            )}
-                            {loginState.isLoggedIn && (
-                                <>
-                                    <IconButton onClick={() => handleEditComment(comment)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => handleDeleteComment(comment.id)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </>
-                            )}
-                        </ListItem>
-                    ))
-                )}
+                ))}
             </List>
         </div>
     );
