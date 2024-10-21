@@ -9,8 +9,8 @@ import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import EditIcon from "@mui/icons-material/Edit";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
-import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ShareIcon from "@mui/icons-material/Share";
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import useCustomMove from "../../hooks/useCustomMove.jsx";
 import {useParams} from "react-router-dom";
@@ -26,8 +26,8 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 const ViewerComponent = () => {
     const actions = [
-        {icon: <FileCopyIcon/>, name: '스크랩하기'},
-        {icon: <BookmarkIcon/>, name: '공유하기'},
+        {icon: <BookmarkIcon/>, name: '스크랩하기'},
+        {icon: <ShareIcon/>, name: '공유하기'},
         {icon: <AutoFixHighIcon/>, name: '수정하기'},
         {icon: <DeleteIcon/>, name: '삭제하기'},
     ];
