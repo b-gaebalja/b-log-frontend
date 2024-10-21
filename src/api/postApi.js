@@ -60,11 +60,16 @@ export const deletePost = async (id) => {
 }
 
 // 북마크 추가
-export const addBookmark = async (id) => {
+export const addBookmark = async (id, sharerId, url) => {
     console.log("북마크 추가 시작");
     const header = {headers: {'Content-Type': 'application/json'}};
     console.log("postId : ", id);
-    return await jwtAxios.post(`${SHARE}/${id}/shares`, {}, header);
+    // 요청 본문에 sharerId와 url을 포함
+    const data = {
+        sharerId, // 현재 로그인된 사용자 ID
+        url // 현재 페이지 URL
+    };
+    return await jwtAxios.post(`${SHARE}/${id}/shares`, data, header);
 };
 
 // 북마크 삭제

@@ -70,6 +70,8 @@ function ListBookmarkedComponent() {
     };
 
     const handleBookmark = async (postId) => {
+        const currentUserId = loginState.id; // 현재 로그인된 사용자 ID
+        const currentUrl = window.location.href; // 현재 페이지 URL
         console.log("핸들북마크 호출 진입시 포스트 아이디: ", postId)
         try {
             if (bookmarks.includes(postId)) {
@@ -79,7 +81,7 @@ function ListBookmarkedComponent() {
                 console.log("북마크 표시 제거");
             } else {
                 console.log("포스트 아이디: ", postId)
-                await addBookmark(postId);
+                await addBookmark(postId, currentUserId, currentUrl);
                 console.log("북마크 추가");
                 setBookmarks([...bookmarks, postId]);
                 console.log("북마크 표시 완료");

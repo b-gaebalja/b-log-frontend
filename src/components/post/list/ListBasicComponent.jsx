@@ -68,6 +68,8 @@ function ListBasicComponent() {
     };
 
     const handleBookmark = async (postId) => {
+        const currentUserId = loginState.id; // 현재 로그인된 사용자 ID
+        const currentUrl = window.location.href; // 현재 페이지 URL
         try {
             if (bookmarks.includes(postId)) {
                 console.log("북마크 존재");
@@ -77,7 +79,7 @@ function ListBasicComponent() {
                 console.log("북마크 표시 제거");
             } else {
                 // 북마크 추가
-                await addBookmark(postId);
+                await addBookmark(postId, currentUserId, currentUrl);
                 console.log("북마크 추가");
                 if (!bookmarks.includes(postId)) { // 중복 체크
                     console.log("북마크 중복 없음");
