@@ -23,6 +23,7 @@ import Button from '@mui/material/Button';
 import ShareComponent from "./ShareComponent.jsx";
 import useCustomLogin from "../../hooks/useCustomLogin.jsx";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import CommentComponent from "../comment/CommentComponent.jsx";
 
 const ViewerComponent = () => {
     const actions = [
@@ -125,6 +126,7 @@ const ViewerComponent = () => {
     return (
         <Box sx={{position: 'relative', height: '100vh'}}>
             <div ref={viewerRef} style={{flex: 1}}></div>
+            <CommentComponent postId={id}/>
             <Box sx={{position: 'absolute', bottom: '50%', right: 16, transform: 'translateY(50%)'}}>
                 <SpeedDial
                     ariaLabel="SpeedDial openIcon example"
