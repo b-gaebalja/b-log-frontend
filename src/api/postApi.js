@@ -17,7 +17,7 @@ export const patchComplete = async (completeParam) => {
 export const getPost = async (id) => {
     const header = {headers: {'Content-Type': 'application/json'}}
 
-    return await jwtAxios.get(`${POST}/${id}`, header)
+    return await axios.get(`${POST}/${id}`, header)
 }
 
 export const getMyPosts = async (email, page) => {
