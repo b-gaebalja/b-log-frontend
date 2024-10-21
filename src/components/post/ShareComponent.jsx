@@ -11,28 +11,29 @@ import {useLocation} from "react-router-dom";
 const SnsShareComponent = () => {
 
     const url = useLocation().pathname;
-    const currentUrl = `http://localhost:5174${url}`;
+    const currentUrl = `https://b-log-coral.vercel.app${url}`;
+    console.log(currentUrl);
 
     return (
-                <div style={{ marginTop: '10px', display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    {/* 페이스북 공유 버튼 */}
-                    <FacebookShareButton url={currentUrl}>
-                        <FacebookIcon size={25} round={true} />
-                    </FacebookShareButton>
-                    <FacebookShareCount url={currentUrl}>
-                        {count => <span>{count} 공유됨</span>}
-                    </FacebookShareCount>
+        <div style={{ marginTop: '10px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+            {/* 페이스북 공유 버튼 */}
+            <FacebookShareButton url={currentUrl}>
+                <FacebookIcon size={25} round={true} />
+            </FacebookShareButton>
+            <FacebookShareCount url={currentUrl}>
+                {count => <span>{count} 공유됨</span>}
+            </FacebookShareCount>
 
-                    {/* 트위터 공유 버튼 */}
-                    <TwitterShareButton url={currentUrl}>
-                        <XIcon size={25} round={true} />
-                    </TwitterShareButton>
+            {/* 트위터 공유 버튼 */}
+            <TwitterShareButton url={currentUrl}>
+                <XIcon size={25} round={true} />
+            </TwitterShareButton>
 
-                    {/* URL 복사 버튼 */}
-                    <CopyToClipboard text={currentUrl} onCopy={() => alert('주소 카피캣 =^,,^=')}>
-                        <Button><SlLink/></Button>
-                    </CopyToClipboard>
-                </div>
+            {/* URL 복사 버튼 */}
+            <CopyToClipboard text={currentUrl} onCopy={() => alert('주소 카피캣 =^,,^=')}>
+                <Button><SlLink/></Button>
+            </CopyToClipboard>
+        </div>
     );
 };
 
