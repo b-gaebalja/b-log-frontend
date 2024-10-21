@@ -3,11 +3,15 @@ import { FacebookIcon, FacebookShareButton, FacebookShareCount, TwitterShareButt
 import CopyToClipboard from "react-copy-to-clipboard";
 import Button from "@mui/material/Button";
 import { SlLink } from "react-icons/sl";
+import {useLocation} from "react-router-dom";
 
 // 현재 페이지 변수 저장
-const currentUrl = window.location.href;
+// const currentUrl = window.location.href
 
 const SnsShareComponent = () => {
+
+    const url = useLocation().pathname;
+    const currentUrl = `http://localhost:5174${url}`;
 
     return (
                 <div style={{ marginTop: '10px', display: 'flex', gap: '10px', alignItems: 'center' }}>
